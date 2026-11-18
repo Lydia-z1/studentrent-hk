@@ -1,0 +1,989 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>StudentRent HK · 学生租住地图</title><meta name="description" content="StudentRent HK · ArcGIS student rental area decision prototype"><link rel="stylesheet" href="https://js.arcgis.com/4.34/esri/themes/light/main.css"><style>
+:root{--ink:#173b39;--muted:#74847e;--green:#226b52;--light:#edf4ef;--line:#e1e8e1;--cream:#f6f8f3;--orange:#e9ab62}*{box-sizing:border-box}body{margin:0;color:var(--ink);font-family:Inter,"Noto Sans SC","PingFang SC","Microsoft Yahei",sans-serif;font-size:14px;background:var(--cream)}button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}button:focus-visible,a:focus-visible{outline:3px solid #e9ab62;outline-offset:3px}button{border:0}header{height:82px;display:flex;align-items:center;padding:0 32px;background:#fff;border-bottom:1px solid var(--line);gap:32px}.brand{display:flex;align-items:center;gap:11px;white-space:nowrap}.brandmark{width:38px;height:42px;background:var(--green);color:white;border-radius:14px 14px 14px 3px;display:grid;place-items:center}.brandname{font-weight:800;letter-spacing:-.6px;font-size:22px}.brandname span{color:#669078}.tagline{font-size:10px;letter-spacing:1.5px;color:var(--muted);margin-top:4px}nav{height:100%;display:flex;gap:29px;align-items:center;margin-left:35px}nav button{height:100%;background:none;position:relative;color:#7a8681;font-size:13px}nav button.active{color:var(--green);font-weight:700}nav button.active:after{content:"";height:3px;background:var(--green);position:absolute;bottom:0;left:0;right:0}.topright{margin-left:auto;display:flex;align-items:center;gap:20px}.demo-badge{font-size:11px;padding:7px 10px;border:1px solid #e4e9df;border-radius:20px;color:#6c7a65;background:#f6f8f0}.demo-badge:before{content:"";display:inline-block;background:#a5b48a;width:6px;height:6px;border-radius:50%;margin-right:6px}.round{background:#edf3ee;border-radius:50%;width:32px;height:32px}.workspace{display:grid;grid-template-columns:302px minmax(0,1fr);height:calc(100dvh - 82px);min-height:720px}.sidebar{background:#fff;padding:27px 24px 18px;border-right:1px solid var(--line);overflow:auto}.eyebrow{font-size:10px;font-weight:700;color:#8c9b85;letter-spacing:2px;text-transform:uppercase}.sidebar h1{font-size:25px;letter-spacing:-1px;font-weight:650;margin:9px 0 10px;line-height:1.45}.intro{color:var(--muted);font-size:12px;line-height:1.8;margin:0 0 22px}.label{font-weight:650;font-size:12px;display:flex;align-items:center;justify-content:space-between;margin:22px 0 12px}.label small{font-weight:400;font-size:10px;color:var(--muted)}.label b{font-size:15px}.field{width:100%;background:#f8faf7;border:1px solid var(--line);border-radius:7px;padding:11px 9px;font-size:12px;color:var(--ink)}input[type=range]{width:100%;accent-color:var(--green);height:4px;margin:9px 0 12px;cursor:pointer}.range-labels{display:flex;justify-content:space-between;color:#9aa49c;font-size:10px}.segmented{display:flex;background:#f3f6f1;border-radius:7px;padding:4px;gap:4px}.segmented button{background:transparent;flex:1;padding:8px 2px;border-radius:5px;font-size:11px;color:var(--muted)}.segmented button.selected{color:var(--green);background:#fff;box-shadow:0 1px 4px #173b3911;font-weight:650}.checks{display:flex;flex-wrap:wrap;gap:7px}.chip{border:1px solid var(--line);border-radius:6px;padding:8px 9px;background:#fff;font-size:11px;display:flex;align-items:center;gap:5px}.chip.selected{border-color:#97b8a5;background:#eff6ef;color:#2b6a4e}.weights{margin-top:19px;font-size:11px}.weights summary{cursor:pointer;color:#61756b}.weightrow{display:flex;align-items:center;gap:8px;margin-top:12px}.weightrow span{width:38px}.weightrow input{flex:1;margin:0}.weightrow output{width:25px;text-align:right}.primary{width:100%;background:var(--green);color:white;border-radius:7px;padding:13px;font-size:12px;font-weight:600;margin-top:24px;display:flex;justify-content:center;gap:12px;align-items:center}.primary:hover{background:#17563f}.reset{display:block;margin:11px auto 0;color:#88968a;background:none;font-size:11px}.side-bottom{margin-top:25px;border-top:1px solid var(--line);padding-top:17px;font-size:10px;line-height:1.8;color:#96a08f}.side-bottom button{background:none;padding:0;color:var(--green);font-size:10px;text-decoration:underline}.stage{display:flex;flex-direction:column;min-width:0;overflow:hidden}.stage-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:22px 27px 17px}.stage-head h2{font-size:18px;letter-spacing:-.4px;margin:0 0 6px;font-weight:650}.stage-head p{font-size:11px;color:var(--muted);margin:0}.tools{display:flex;gap:7px}.outline{border:1px solid #dae3d8;background:#fff;border-radius:6px;padding:9px 12px;font-size:11px;display:flex;gap:7px;align-items:center}.outline:hover{background:#eff5ed}.map-shell{position:relative;flex:1;min-height:320px;margin:0 24px;border:1px solid #dae3d7;border-radius:11px;overflow:hidden;background:#e8eeeb}#viewDiv,#fallback{position:absolute;inset:0}#fallback{background:linear-gradient(135deg,#e8efde,#e2ede9);display:flex;align-items:center;justify-content:center;color:#6c8577}.fallback-message{text-align:center;background:#ffffffd9;border-radius:12px;padding:24px;max-width:350px;font-size:12px;line-height:1.9}.map-top{position:absolute;top:17px;left:18px;display:flex;gap:7px;z-index:3;flex-wrap:wrap;right:58px;pointer-events:none}.map-pill{background:#ffffffed;box-shadow:0 2px 8px #173b3910;border:1px solid #dce4d7;border-radius:6px;padding:8px 11px;font-size:10px;display:flex;align-items:center;gap:6px;pointer-events:auto}.map-pill button{background:none;padding:0;font-size:10px}.map-pill input{accent-color:var(--green);margin:0}.map-bottom{position:absolute;bottom:24px;left:17px;background:#ffffffee;border:1px solid #dce4d7;border-radius:7px;padding:11px 13px;font-size:10px;z-index:3}.legendrow{display:flex;gap:13px;margin-top:7px;color:#77877a}.dot{height:7px;width:7px;border-radius:50%;display:inline-block;margin-right:5px;background:var(--green)}.map-note{position:absolute;bottom:6px;left:18px;font-size:9px;color:#758773;pointer-events:none}.map-control{position:absolute;right:15px;top:17px;display:flex;flex-direction:column;gap:5px;z-index:3}.map-control button{background:#fff;width:31px;height:31px;border-radius:5px;box-shadow:0 1px 5px #173b3910;font-size:18px}.detail{position:absolute;right:15px;bottom:31px;width:265px;background:#fff;border:1px solid #dde5da;border-radius:10px;padding:18px;box-shadow:0 5px 25px #173b3918;z-index:4}.detail .close{position:absolute;right:10px;top:8px;background:none;color:#8b968c;font-size:20px}.detail-head{display:flex;gap:10px;align-items:center}.rankbox{background:#e9f2e7;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--green);font-weight:700}.detail h3{font-size:18px;margin:0 0 4px}.sub{font-size:10px;color:var(--muted)}.detail-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:18px 0 13px}.detail-stats b{font-size:18px;display:block;margin-top:4px;letter-spacing:-.5px}.detail-stats b small{font-size:10px;font-weight:400}.scoreline{font-size:10px;display:flex;justify-content:space-between}.scorebar{height:4px;background:#eff3ea;border-radius:3px;margin:7px 0 13px;overflow:hidden}.scorebar i{display:block;height:100%;background:#5c9671}.facility-list{font-size:10px;color:#728471;display:flex;gap:9px;padding:10px 0;border-top:1px solid #edf0e8}.detail-reason{font-size:11px;line-height:1.8;color:#6a7d70}.detail button.compare-add{width:100%;background:#f0f5eb;border:1px solid #dae5d2;border-radius:6px;padding:9px;color:var(--green);font-size:11px}.result-header{padding:20px 26px 12px;display:flex;align-items:center;justify-content:space-between}.result-header h3{font-size:13px;margin:0}.result-header span{color:#83907e;font-size:10px}.cards{display:flex;gap:12px;overflow:auto;padding:0 24px 16px;min-height:159px}.area-card{flex:1;min-width:205px;border:1px solid #dfe6d9;border-radius:8px;background:#fff;padding:15px;text-align:left;cursor:pointer;position:relative;transition:background .2s,border .2s}.area-card:hover,.area-card.selected{background:#f4f8ee;border-color:#7c9e73}.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}.card-title{font-size:15px;font-weight:650}.card-title small{font-size:11px;color:#84937d;margin-right:7px}.score{font-size:11px;font-weight:600;color:var(--green);background:#e9f1e2;border-radius:4px;padding:4px 6px}.card-en{font-size:9px;color:#8d9a84;letter-spacing:.4px;margin-left:21px}.card-stats{display:flex;gap:19px;margin:14px 0 11px;font-size:11px}.card-stats b{font-size:14px;font-weight:650}.card-foot{font-size:10px;color:#819078;display:flex;justify-content:space-between}.card-foot label{cursor:pointer}.card-foot input{accent-color:var(--green);vertical-align:middle}.stage-footer{display:flex;justify-content:space-between;padding:0 26px 13px;font-size:9px;color:#919b89}.empty{background:white;border:1px dashed #cddbc7;border-radius:8px;padding:25px;flex:1;color:#708469;font-size:12px;line-height:1.8}.hidden{display:none!important}svg.ico{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}dialog{border:1px solid #dae4d7;border-radius:15px;padding:0;color:var(--ink);max-width:820px;width:calc(100% - 40px);box-shadow:0 20px 100px #173b3930}dialog::backdrop{background:#173b3959;backdrop-filter:blur(3px)}.modalhead{padding:22px 26px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.modalhead h2{font-size:20px;margin:0}.modalhead button{font-size:23px;background:none;color:#80917f}.modalbody{padding:24px 26px;max-height:74dvh;overflow:auto}.modalbody p{font-size:12px;line-height:1.9;color:#71816e}.modalbody h3{font-size:14px;margin:22px 0 11px}.notice{padding:13px 16px;background:#f5f6e9;border:1px solid #e8e8cf;border-radius:7px;font-size:11px;line-height:1.8;color:#7e805b}.compare-grid{display:grid;gap:13px}.compare-column{padding:18px;background:#f4f7ef;border:1px solid #e0e8d9;border-radius:9px}.compare-column h3{margin:0 0 5px;font-size:18px}.metric{font-size:11px;margin:18px 0}.metric b{float:right}.metricbar{height:6px;background:#e1e9d9;border-radius:3px;margin-top:8px}.metricbar i{height:100%;background:#69a073;display:block;border-radius:3px}.guide-tab{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}.guide-tab button{padding:9px 13px;background:#f0f4e9;border-radius:6px;font-size:12px}.guide-tab button.selected{background:var(--green);color:#fff}.check-item{display:flex;align-items:flex-start;gap:10px;padding:15px 0;border-bottom:1px solid var(--line);font-size:12px;line-height:1.8}.check-item input{accent-color:var(--green);margin-top:5px}.check-item:has(input:checked){color:#8a9981}.check-item strong{display:block}.progress{font-size:11px;color:#76896d;margin-top:15px}.record-form{display:grid;grid-template-columns:1fr 1fr;gap:14px}.record-form label{font-size:11px;line-height:2}.record-form .wide{grid-column:1/-1}textarea.field{resize:vertical;min-height:70px}.photo-grid{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.photo-grid img{width:90px;height:80px;object-fit:cover;border-radius:6px}.record-card{background:#f5f8ef;border:1px solid #dce6d5;padding:15px;border-radius:8px;margin-top:12px}.record-card h4{margin:0 0 5px}.record-card button{font-size:10px;background:white;border:1px solid #d9e4d0;padding:6px 10px;border-radius:4px}.record-card p{white-space:pre-wrap;margin:7px 0}.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);z-index:50;background:#173b39;color:white;padding:12px 21px;border-radius:9px;box-shadow:0 5px 30px #0002;font-size:12px;max-width:90vw}.method-list{font-size:12px;line-height:2;color:#687c63;padding-left:20px}.error{color:#9e6344;font-size:11px;margin-top:10px}.esri-view .esri-view-surface--inset-outline:focus:after{outline:0}.esri-ui-bottom-right{bottom:0!important}.esri-attribution{font-size:9px!important}#pending{color:#a47e43;font-size:10px;margin-top:9px}.count-bubble{background:var(--green);color:white;border-radius:50%;padding:2px 5px;font-size:9px}.mobile-detail{display:none}
+@media(min-width:1600px){.workspace{grid-template-columns:330px minmax(0,1fr)}.sidebar{padding:35px}.detail{width:290px}.cards{min-height:170px}.area-card{padding:20px}.map-shell{margin:0 30px}.stage-head{padding:25px 32px}}@media(max-width:1100px){header{padding:0 22px;gap:15px}nav{margin-left:5px;gap:19px}.tagline{display:none}.demo-badge{display:none}.workspace{grid-template-columns:267px minmax(0,1fr)}.sidebar{padding:24px 19px}.detail{width:230px}.tools .text-label{display:none}.stage-head{padding:20px}.map-shell{margin:0 17px}.cards{padding-left:17px;padding-right:17px}.map-top{right:48px}.map-pill{padding:7px}}@media(max-width:760px){header{height:65px;padding:0 16px}.brandname{font-size:19px}.brandmark{width:32px;height:35px}nav{gap:15px;margin-left:auto}nav button{font-size:11px}.topright{display:none}.workspace{display:block;height:auto;min-height:0}.sidebar{padding:22px 20px;border-right:none;overflow:visible}.sidebar h1{font-size:22px;margin-bottom:6px}.intro{margin-bottom:14px}.sidebar form{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}.sidebar .label{margin-top:15px}.sidebar .wide{grid-column:1/-1}.sidebar .side-bottom{margin-top:15px}.primary{margin-top:17px}.side-bottom{padding-top:10px}.stage{overflow:visible}.stage-head{padding:20px}.stage-head h2{font-size:17px}.map-shell{height:510px;flex:auto;margin:0 12px}.detail{width:215px;bottom:35px;right:10px;padding:14px}.map-bottom{max-width:135px;line-height:1.8;left:10px;bottom:33px}.legendrow{flex-wrap:wrap;gap:4px}.map-top{left:10px;top:10px;gap:5px}.map-pill{font-size:9px}.map-control{right:10px;top:10px}.cards{padding:0 12px 15px}.area-card{min-width:215px}.stage-footer{font-size:8px;padding:0 15px 15px;line-height:1.7;gap:20px}.modalbody{padding:18px}.modalhead{padding:20px}.compare-grid{overflow:auto}.record-form{grid-template-columns:1fr}.record-form .wide{grid-column:auto}.label b{font-size:14px}.sidebar .eyebrow{font-size:9px}}
+
+header{gap:20px}nav{margin-left:15px;gap:24px}.language-select{font-size:11px;background:#f3f6ef;border:1px solid #dce5d6;border-radius:6px;padding:8px 5px;max-width:110px;color:var(--ink)}.topright{gap:10px}.layers-panel{position:absolute;top:61px;left:17px;width:207px;background:#fffffff5;border:1px solid #dce4d7;border-radius:9px;padding:14px;z-index:4;box-shadow:0 4px 16px #173b3910;max-height:calc(100% - 100px);overflow:auto}.layers-panel h4{font-size:11px;margin:0 0 13px;display:flex;justify-content:space-between;align-items:center}.layers-panel h4 button{background:none;color:#83927d;font-size:18px}.layer-row{display:flex;align-items:center;gap:8px;margin:12px 0;font-size:10px;cursor:pointer}.layer-row input{margin-left:auto;accent-color:var(--green)}.map-key{display:inline-grid;place-items:center;color:#fff;width:22px;height:22px;border-radius:5px;font-weight:700;font-size:12px;flex-shrink:0}.map-key svg{width:16px;height:16px;stroke:white;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.layer-section{border-top:1px solid #e4eadd;margin-top:14px;padding-top:10px;font-size:9px;line-height:1.8;color:#86927d}.legendrow{gap:8px;flex-wrap:wrap}.facility-list{flex-wrap:wrap;gap:7px}.map-note{max-width:85%}.detail{max-height:calc(100% - 84px);overflow:auto}.sidebar h1{white-space:pre-line}.intro{white-space:pre-line}.label b{white-space:nowrap}.layer-extra{padding:8px;border:1px dashed #d5dfcc;background:#f7f9f2;border-radius:5px;font-size:10px;margin-top:12px}.map-top{right:50px}.stage-head h2{font-size:18px}html[lang=en] .brandname{font-size:20px}html[lang=en] .sidebar h1{font-size:24px}html[lang=en] .label{font-size:11px}html[lang=en] .stage-head h2{font-size:17px}html[lang=en] nav{gap:15px}html[lang=en] nav button{font-size:12px}.modalbody .guide-tab{margin-bottom:16px}.modalhead h2{padding-right:12px}.sub{line-height:1.6}.map-note{background:#ffffffc9;padding:2px 4px;border-radius:3px}.map-shell .esri-popup__main-container{max-width:260px}.sidebar .primary{font-size:12px}.map-pill{max-width:100%}.map-pill span{overflow-wrap:anywhere}#minutesOut{font-size:14px}#connectError{white-space:pre-line}@media(max-width:1100px){header{gap:10px}.topright .demo-badge{display:none}nav{gap:14px;margin-left:0}.language-select{max-width:92px;font-size:10px}.brandname{font-size:19px}.topright{gap:5px}.round{display:none}}@media(max-width:760px){header{height:auto;min-height:95px;flex-wrap:wrap;padding:12px 15px;gap:8px}nav{order:3;height:29px;width:100%;justify-content:space-between;margin:0}nav button{font-size:11px}nav button.active:after{bottom:-1px}.topright{display:flex;margin-left:auto}.language-select{max-width:105px}.workspace{height:auto}.layer-row{font-size:10px}.layers-panel{width:185px;left:10px;top:53px}.stage-head h2{font-size:16px}.detail{width:207px}.map-top{right:46px}.map-note{font-size:8px}html[lang=en] nav button{font-size:11px}html[lang=en] .sidebar h1{font-size:23px}html[lang=en] .stage-head h2{font-size:15px}.map-pill{padding:6px 8px}.map-pill button{font-size:9px}.stage-head{gap:6px}.tools .outline{padding:8px}.layer-extra{font-size:9px}}
+.detail-rentals{margin-top:15px;border-top:1px solid #e3eada;padding-top:13px}.detail-rental-heading{display:flex;align-items:center;justify-content:space-between;font-size:11px}.detail-rentals p{color:#829078;font-size:10px;line-height:1.7}.listing-open{width:100%;background:var(--green);color:#fff;padding:10px 8px;border-radius:6px;font-size:11px}.test-badge{display:inline-block;background:#f4eedb;border:1px solid #e7ddbb;color:#8c7745;font-size:9px;border-radius:4px;padding:4px 6px}.card-listing-hint{font-size:10px;color:var(--green);margin:12px 0 0;border-top:1px solid #e5ebdf;padding-top:10px;display:flex;justify-content:space-between}.card-listing-hint span{font-size:9px;background:#eff3e8;padding:2px 5px;border-radius:3px}.area-card{min-width:235px}.cards{min-height:180px}.rental-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;flex-wrap:wrap}.rental-tabs{display:flex;gap:6px;background:#f1f5ea;padding:4px;border-radius:7px}.rental-tabs button{padding:8px 11px;border-radius:5px;font-size:11px;background:none;color:#7d8d73}.rental-tabs button.selected{background:#fff;box-shadow:0 1px 5px #173b3910;color:var(--green)}.budget-toggle{font-size:11px;color:#718169;display:flex;gap:6px;align-items:center}.budget-toggle input{accent-color:var(--green)}.modalbody .rental-context{font-size:10px;color:#87917c;line-height:1.9;margin:12px 0 19px}.rental-list-header{display:flex;align-items:center;justify-content:space-between;font-size:12px;margin-bottom:12px}.rental-list-header button,.listing-back{background:none;color:var(--green);font-size:11px;padding:5px 0}.rental-list{display:flex;flex-direction:column;gap:14px}.rental-card{display:flex;gap:18px;padding:17px;border:1px solid #e0e7d7;border-radius:9px;background:#fff}.rental-art{background:#edf3e6;border:1px solid #e5ebdc;border-radius:7px;flex:0 0 120px;align-self:stretch;min-height:145px;display:flex;align-items:center;justify-content:center;position:relative;color:#7f9a70}.rental-art svg{width:100px}.rental-art>span,.sample-art>span{position:absolute;bottom:10px;font-size:9px;letter-spacing:2px;color:#7e9473}.rental-content{flex:1;min-width:0}.rental-badges{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.budget-badge{font-size:9px;background:#edf4e9;color:#5f855a;padding:4px 6px;border-radius:4px}.budget-badge.over{background:#f5ebe2;color:#a7805c}.modalbody .rental-card h3{font-size:16px;margin:11px 0 6px}.rental-meta{color:#87947c;font-size:10px;line-height:1.8}.rental-price{font-size:23px;letter-spacing:-.6px;font-weight:700;margin:10px 0;color:var(--green)}.rental-price small{font-size:10px;font-weight:400;color:#839277;letter-spacing:0}.rental-facts{display:flex;gap:7px 14px;flex-wrap:wrap;font-size:10px;color:#708463;line-height:1.8}.rental-origin{font-size:9px;color:#99a08f;margin:10px 0}.sample-detail-link{color:var(--green);font-size:11px;text-underline-offset:3px}.portal-section{border-top:1px solid #e4e9de;margin-top:23px;padding-top:4px}.portal-main{display:block;background:#eaf2e3;border:1px solid #d6e1cc;border-radius:6px;padding:12px 15px;text-decoration:none;color:var(--green);font-size:12px}.portal-main:hover{background:#dfead6}.modalbody .portal-coverage{font-size:10px;line-height:1.9;color:#8c967e;margin:9px 0}.provider-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.portal-secondary{border:1px solid #dbe4d1;border-radius:5px;padding:9px 14px;text-decoration:none;color:#718665;font-size:11px}.modalbody .rental-smallprint{font-size:10px;color:#8e997f;line-height:1.9;margin-top:19px}.sample-detail-top{display:grid;grid-template-columns:160px 1fr;gap:22px;margin:20px 0;align-items:center}.sample-art{height:150px;display:grid;place-items:center;position:relative;background:#edf3e6;color:#7f9a70;border-radius:9px}.sample-art svg{width:130px}.modalbody .sample-detail-top h3{margin:11px 0;font-size:19px}.listing-field-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 20px;border-top:1px solid #e1e9d9}.listing-field-grid>div{padding:13px 0;border-bottom:1px solid #e1e9d9}.listing-field-grid dt{font-size:10px;color:#8d9b82;margin-bottom:7px}.listing-field-grid dd{margin:0;font-size:12px;overflow-wrap:anywhere}.listing-back{margin-bottom:14px}.detail{width:280px}.stage-footer{gap:15px}@media(max-width:1100px){.detail{width:240px}.rental-card{gap:14px}.rental-art{flex-basis:95px}.rental-art svg{width:80px}}@media(max-width:760px){.cards{min-height:180px}.detail{width:215px}.rental-card{padding:12px;gap:12px}.rental-art{flex-basis:65px;min-height:150px}.rental-art svg{width:58px}.rental-price{font-size:21px}.modalbody .rental-card h3{font-size:14px}.rental-art>span{font-size:7px;letter-spacing:1px}.sample-detail-top{grid-template-columns:90px 1fr;gap:15px}.sample-art{height:135px}.sample-art svg{width:85px}.modalbody .sample-detail-top h3{font-size:16px}.rental-tabs button{padding:8px}.listing-field-grid{gap:0 10px}.listing-field-grid dd{font-size:11px}.rental-toolbar{gap:12px}.modalbody .rental-smallprint{font-size:9px}}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol><symbol id="map" viewBox="0 0 24 24"><path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2Z M9 3v16 M15 5v16"/></symbol><symbol id="compare" viewBox="0 0 24 24"><path d="M5 20V10h4v10M15 20V4h4v16M3 20h18"/></symbol><symbol id="layers" viewBox="0 0 24 24"><path d="m3 7 9-5 9 5-9 5Z M3 12l9 5 9-5 M3 17l9 5 9-5"/></symbol></defs></svg>
+<header><div class="brand"><div class="brandmark"><svg class="ico"><use href="#pin"/></svg></div><div><div class="brandname">StudentRent <span>HK</span></div><div class="tagline" data-i18n="tagline"></div></div></div><nav><button class="active" id="exploreNav" data-i18n="explore"></button><button id="compareNav"><span data-i18n="compare"></span> <span id="compareCount"></span></button><button id="guideNav" data-i18n="guide"></button></nav><div class="topright"><span class="demo-badge" id="dataBadge"></span><select class="language-select" id="language" data-aria="languagePicker"><option value="sc">简体中文</option><option value="tc">繁體中文</option><option value="en">English</option></select><button class="round" id="help" data-aria="help">?</button></div></header>
+<main class="workspace"><aside class="sidebar"><div class="eyebrow" data-i18n="sideTitle"></div><h1 data-i18n="hero"></h1><p class="intro" data-i18n="intro"></p><form id="filters"><div class="wide"><label class="label" for="university"><span data-i18n="university"></span><small data-i18n="campus"></small></label><select class="field" id="university"></select></div><div><label class="label" for="budget"><span data-i18n="budget"></span><b id="budgetOut"></b></label><input id="budget" type="range" min="4000" max="16000" step="500" value="8000"><div class="range-labels"><span>HK$ 4,000</span><span id="budgetLimit">16,000</span></div><div style="font-size:10px;color:#8a9882;margin-top:9px" id="rentBasis"></div></div><div><label class="label" for="minutes"><span data-i18n="commute"></span><b id="minutesOut"></b></label><input id="minutes" type="range" min="5" max="90" step="1" value="30"><div class="range-labels"><span id="minutesMin"></span><span id="minutesMax"></span></div></div><div class="wide"><div class="label"><span data-i18n="facilities"></span><small data-i18n="multiple"></small></div><div class="checks" id="preferences"></div><details class="weights"><summary data-i18n="weights"></summary><div class="weightrow"><span data-i18n="rent"></span><input type="range" min="0" max="10" value="4" id="wRent" data-aria="rent"><output>4</output></div><div class="weightrow"><span data-i18n="time"></span><input type="range" min="0" max="10" value="4" id="wTime" data-aria="time"><output>4</output></div><div class="weightrow"><span data-i18n="poi"></span><input type="range" min="0" max="10" value="2" id="wPoi" data-aria="poi"><output>2</output></div></details><button class="primary" type="submit"><svg class="ico"><use href="#map"/></svg><span data-i18n="search"></span> →</button><div id="pending" class="hidden" data-i18n="dirty"></div><button type="button" class="reset" id="reset" data-i18n="reset"></button></div></form><div class="side-bottom"><span data-i18n="sideNote"></span><br><span data-i18n="neutral"></span><br><button id="method" data-i18n="methodLink"></button></div></aside>
+<section class="stage"><div class="stage-head"><div><h2 data-i18n="mapTitle"></h2><p id="resultSummary" aria-live="polite"></p></div><div class="tools"><button class="outline" id="dataMenu" data-i18n="dataDialog"></button><button class="outline" id="connect"><svg class="ico"><use href="#layers"/></svg><span class="text-label" data-i18n="connect"></span></button><button class="outline" id="compareButton"><svg class="ico"><use href="#compare"/></svg><span class="text-label" data-i18n="compareBtn"></span><span id="compareCount2">0</span></button></div></div><div class="map-shell"><div id="fallback"><div class="fallback-message"><svg class="ico"><use href="#map"/></svg><br><strong id="mapLoading" data-i18n="mapLoading"></strong><div id="mapLoadingNote" data-i18n="mapCardsReady"></div><button class="outline" id="retryMap" style="margin:12px auto 0" data-i18n="reload"></button></div></div><div id="viewDiv" data-aria="mapAria"></div><div class="map-top"><span class="map-pill"><span style="color:#bf9154">◆</span><span id="campusLabel"></span></span><span class="map-pill"><button id="toggleLayers" aria-expanded="true"><span data-i18n="layers"></span> ▾</button></span></div><div class="layers-panel" id="layersPanel"></div><div class="map-control"><button id="zoomIn" data-aria="zoomIn">+</button><button id="zoomOut" data-aria="zoomOut">−</button><button id="homeMap" data-aria="home" style="font-size:15px">⌂</button><button id="baseMap" data-aria="basemap" style="font-size:14px">▧</button></div><div class="map-note" data-i18n="mapNote"></div><article class="detail hidden" id="detail"></article></div><div class="result-header"><h3 id="cardsTitle"></h3><span data-i18n="sort"></span></div><div id="cards" class="cards"></div><footer class="stage-footer"><a id="nativeLink" target="_blank" rel="noopener"></a><span id="footerNote"></span></footer></section></main>
+<dialog id="modal"><div class="modalhead"><h2 id="modalTitle"></h2><button id="closeModal" data-aria="close">×</button></div><div class="modalbody" id="modalBody"></div></dialog><div id="toast" class="toast hidden" role="status"></div>
+<script>
+const campuses={hku:{name:'香港大学',campus:'薄扶林',xy:[114.1377,22.2832]},cuhk:{name:'香港中文大学',campus:'马料水',xy:[114.2068,22.4196]},ust:{name:'香港科技大学',campus:'清水湾',xy:[114.2645,22.3364]},polyu:{name:'香港理工大学',campus:'红磡',xy:[114.1797,22.3043]},cityu:{name:'香港城市大学',campus:'九龙塘',xy:[114.1725,22.3377]},bu:{name:'香港浸会大学',campus:'九龙塘',xy:[114.1821,22.3416]},edu:{name:'香港教育大学',campus:'大埔',xy:[114.1945,22.4687]},ling:{name:'岭南大学',campus:'屯门',xy:[113.982,22.4104]}};
+// Purpose-built mock data. None of these rents, travel times or amenity scores are a live observation.
+const areas=[
+{id:'kt',name:'坚尼地城',en:'Kennedy Town',xy:[114.1285,22.2824],rent:7800,poi:[92,86,80],times:[12,65,70,38,45,48,80,65],reason:'校园生活与社区日常相连，适合希望缩短通勤的同学。'},
+{id:'syp',name:'西营盘',en:'Sai Ying Pun',xy:[114.1424,22.2863],rent:7500,poi:[94,94,90],times:[15,58,65,30,40,43,75,65],reason:'交通与生活设施较均衡，适合喜欢成熟社区的同学。'},
+{id:'st',name:'石塘咀',en:'Shek Tong Tsui',xy:[114.1344,22.2855],rent:6500,poi:[80,88,77],times:[18,63,68,35,45,47,78,68],reason:'预算与校园距离之间的折中选择，可重点比较楼宇条件。'},
+{id:'sw',name:'上环',en:'Sheung Wan',xy:[114.1502,22.2861],rent:8000,poi:[95,92,93],times:[24,55,60,28,38,40,70,65],reason:'公共交通选择较多，适合重视城市生活便利的同学。'},
+{id:'tp',name:'大埔墟',en:'Tai Po Market',xy:[114.1688,22.4455],rent:5800,poi:[82,91,85],times:[65,20,65,40,35,38,25,70],reason:'社区配套较完整，可作为新界东校区的预算型候选区域。'},
+{id:'shatin',name:'沙田',en:'Sha Tin',xy:[114.188,22.3816],rent:6800,poi:[93,95,92],times:[55,22,58,30,22,25,38,65],reason:'港铁与大型社区设施集中，适合重视多种生活配套的同学。'},
+{id:'mos',name:'马鞍山',en:'Ma On Shan',xy:[114.2315,22.4246],rent:6200,poi:[85,89,82],times:[70,30,65,42,40,43,40,85],reason:'适合在租金与较安静的社区环境之间寻找平衡。'},
+{id:'tko',name:'将军澳',en:'Tseung Kwan O',xy:[114.2602,22.3075],rent:7200,poi:[91,93,85],times:[55,65,25,35,40,40,80,95],reason:'生活设施集中，可作为清水湾校区的通勤候选区域。'},
+{id:'choi',name:'彩虹',en:'Choi Hung',xy:[114.2097,22.3343],rent:5600,poi:[88,80,78],times:[50,48,30,25,20,18,65,80],reason:'租金门槛较低，适合优先控制预算的同学。'},
+{id:'hh',name:'红磡',en:'Hung Hom',xy:[114.1875,22.307],rent:7000,poi:[92,90,89],times:[40,40,50,12,25,25,60,75],reason:'靠近理大及多种交通连接，适合希望兼顾校园与市区的同学。'},
+{id:'ssp',name:'深水埗',en:'Sham Shui Po',xy:[114.1617,22.3301],rent:5500,poi:[90,95,86],times:[38,40,55,25,18,24,60,60],reason:'生活选择丰富、演示租金较低，选房时可多比较楼宇和室内条件。'},
+{id:'klt',name:'九龙塘',en:'Kowloon Tong',xy:[114.175,22.3367],rent:8500,poi:[95,85,87],times:[45,32,50,25,10,15,55,70],reason:'邻近多所大学与换乘站，适合优先缩短校区通勤的同学。'},
+{id:'tm',name:'屯门',en:'Tuen Mun',xy:[113.973,22.394],rent:5200,poi:[83,92,87],times:[65,75,95,60,55,60,85,20],reason:'演示租金较低，适合以屯门校区为目的地的同学。'},
+{id:'siuhong',name:'兆康',en:'Siu Hong',xy:[113.979,22.4115],rent:5800,poi:[90,78,75],times:[65,70,90,55,50,55,80,12],reason:'可优先考察与岭南大学之间的实际步行条件及社区设施。'}];
+
+</script><script>
+'use strict';
+const messages={
+explore:['探索区域','探索區域','Explore areas'],compare:['区域对比','區域對比','Compare areas'],guide:['安心租住指南','安心租住指南','Renting guide'],demo:['交互示范 · 模拟数据','互動示範 · 模擬數據','Interactive demo · Mock data'],hero:['在香港，找到你的\n理想生活圈。','在香港，找到你的\n理想生活圈。','Find your place\nin Hong Kong.'],intro:['从校园出发，让预算、通勤与日常生活\n在地图上找到平衡。','從校園出發，讓預算、通勤與日常生活\n在地圖上找到平衡。','Balance your budget, campus commute\nand everyday life on one map.'],university:['你的大学','你的大學','Your university'],campus:['目的校区','目的校區','Destination campus'],budget:['每月租金上限','每月租金上限','Monthly rent limit'],rentBasis:['口径：合租单间 / 月 · 演示估值','口徑：合租單間 / 月 · 示範估值','Basis: one room in a shared flat / month · Mock'],commute:['最长单程通勤','最長單程通勤','Maximum one-way commute'],minutes:['{n} 分钟','{n} 分鐘','{n} min'],mockEstimate:['演示估算','示範估算','Mock estimate'],facilities:['生活设施偏好','生活設施偏好','Amenity preferences'],multiple:['可多选','可多選','Choose any'],mtr:['近港铁','近港鐵','MTR'],shop:['连锁超市','連鎖超市','Chain supermarkets'],clinic:['诊所','診所','Clinics'],gym:['连锁健身房','連鎖健身房','Chain gyms'],food:['餐厅','餐廳','Restaurants'],weights:['调整你的推荐权重','調整你的推薦權重','Adjust recommendation weights'],rent:['租金','租金','Rent'],time:['通勤','通勤','Commute'],poi:['设施','設施','Amenities'],search:['探索适合我的区域','探索適合我的區域','Find my areas'],dirty:['偏好已更改，点击上方按钮更新结果','偏好已更改，點擊上方按鈕更新結果','Preferences changed. Apply them to update results.'],reset:['重置偏好','重設偏好','Reset preferences'],sideNote:['先选生活圈，再寻找具体房源。','先選生活圈，再尋找具體房源。','Choose an area before searching for a home.'],neutral:['推荐不受付费合作影响。','推薦不受付費合作影響。','Paid partnerships do not affect rankings.'],methodLink:['了解演示数据与评分方法 ↗','了解示範數據與評分方法 ↗','About the mock data and scoring ↗'],mapTitle:['你的香港生活地图','你的香港生活地圖','Your Hong Kong living map'],connect:['连接 Web Map','連接 Web Map','Connect Web Map'],compareBtn:['比较区域','比較區域','Compare'],mapLoading:['正在打开 ArcGIS 香港地图…','正在開啟 ArcGIS 香港地圖…','Opening the ArcGIS Hong Kong map…'],mapCardsReady:['下方区域卡片已可操作。','下方區域卡片已可操作。','You can already use the area cards below.'],reload:['重新加载地图','重新載入地圖','Reload map'],layers:['图层与图例','圖層與圖例','Layers & legend'],layersTitle:['图层与图标说明','圖層與圖示說明','Layers & map symbols'],areaLayer:['推荐区域','推薦區域','Recommended areas'],campusLayer:['大学校区','大學校區','University campus'],mockPoiNote:['设施点为虚构位置，仅用于演示。不代表实际分店或步行距离。','設施點為虛構位置，僅用於示範。不代表實際分店或步行距離。','Amenity points are fictional, not real branches or walking distances.'],suitability:['区域适宜度 · 演示评分','區域適宜度 · 示範評分','Area suitability · Mock score'],mapNote:['圆形只示意区域位置，不代表边界或通勤服务区','圓形只示意區域位置，不代表邊界或通勤服務區','Circles indicate approximate locations, not boundaries or commute service areas.'],recommended:['推荐生活圈 · {n}','推薦生活圈 · {n}','Recommended areas · {n}'],sort:['按综合适宜度排序 ↓','按綜合適宜度排序 ↓','Overall suitability ↓'],footer:['原型 v0.2 · 租金、通勤、设施均为模拟数据，不作租住依据','原型 v0.2 · 租金、通勤、設施均為模擬數據，不作租住依據','Prototype v0.2 · Mock rent, commute and amenities; not housing advice'],summary:['{n} 个区域符合偏好 · 单间月租 ≤ HK$ {budget} · 单程 ≤ {time} 分钟','{n} 個區域符合偏好 · 單間月租 ≤ HK$ {budget} · 單程 ≤ {time} 分鐘','{n} matching areas · Room rent ≤ HK$ {budget}/mo · Commute ≤ {time} min'],atCampus:['{name} · {campus}校区','{name} · {campus}校區','{name} · {campus}'],empty:['当前没有符合条件的区域。试试增加预算、放宽通勤上限或切换大学。这里仅筛选 14 个演示候选区域，并不代表香港没有其他选择。','目前沒有符合條件的區域。試試增加預算、放寬通勤上限或切換大學。這裡僅篩選 14 個示範候選區域，並不代表香港沒有其他選擇。','No matching areas. Try a higher budget, longer commute or another university. This demo only covers 14 candidate areas, not all Hong Kong housing options.'],viewArea:['查看 {name}','查看 {name}','View {name}'],score:['{n} 分','{n} 分','{n} pts'],perMonth:['/ 月','/ 月','/ mo'],cardCommute:['{n} 分钟通勤','{n} 分鐘通勤','{n} min commute'],balanced:['生活配套均衡','生活配套均衡','Balanced amenities'],visit:['值得实地考察','值得實地考察','Worth a site visit'],areaOverview:['{en} · 区域概览','{en} · 區域概覽','{en} · Area overview'],mockRent:['单间月租 · 模拟','單間月租 · 模擬','Room rent · Mock'],mockTime:['到校通勤 · 模拟','到校通勤 · 模擬','To campus · Mock'],oneWay:['分钟 / 单程','分鐘 / 單程','min / one way'],overall:['综合适宜度','綜合適宜度','Overall suitability'],facilityIndex:['设施便利指数 / 100 · 模拟','設施便利指數 / 100 · 模擬','Amenity access index / 100 · Mock'],removeCompare:['✓ 已加入对比，点击移除','✓ 已加入對比，點擊移除','✓ Comparing · Click to remove'],addCompare:['＋ 加入区域对比','＋ 加入區域對比','＋ Add to comparison'],maxCompare:['最多比较 3 个区域，请先移除其中一个。','最多比較 3 個區域，請先移除其中一個。','Compare up to 3 areas. Remove one first.'],weightError:['请至少保留一项大于 0 的推荐权重。','請至少保留一項大於 0 的推薦權重。','At least one recommendation weight must be above 0.'],resetDone:['已恢复默认偏好。','已恢復預設偏好。','Default preferences restored.'],compareTitle:['生活圈对比 · {n} 个区域','生活圈對比 · {n} 個區域','Compare {n} areas'],compareEmpty:['先在区域卡片勾选「对比」，或在地图详情中加入区域。最多同时比较 3 个。','先在區域卡片勾選「對比」，或在地圖詳情中加入區域。最多同時比較 3 個。','Select Compare on an area card or in its map details. Compare up to 3 areas.'],compareNotice:['所有数值均为模拟数据。条形越长，越符合当前偏好。','所有數值均為模擬數據。條形越長，越符合目前偏好。','All figures are mock data. Longer bars indicate a closer match to your preferences.'],viewMap:['在地图中查看 ↗','在地圖中查看 ↗','View on map ↗'],weightsInfo:['当前权重：租金 {a} / 通勤 {b} / 设施 {c}。租金与通勤得分按上限余量计算。','目前權重：租金 {a} / 通勤 {b} / 設施 {c}。租金與通勤得分按上限餘量計算。','Weights: rent {a} / commute {b} / amenities {c}. Rent and commute scores reflect remaining headroom below your limits.'],preferredIndex:['偏好设施指数','偏好設施指數','Preferred amenities index'],guideTitle:['安心租住，每一步都有准备','安心租住，每一步都有準備','Be prepared at every renting step'],checkTab:['租房检查清单','租屋檢查清單','Rental checklist'],warningTab:['识别风险信号','識別風險訊號','Warning signs'],recordTab:['入住状况记录','入住狀況記錄','Move-in records'],checkProgress:['已完成 {n} / {total} 项 · 保存在当前浏览器','已完成 {n} / {total} 項 · 儲存於目前瀏覽器','{n} / {total} complete · Saved in this browser'],storageError:['浏览器未允许保存，内容暂未保存。','瀏覽器未允許儲存，內容暫未儲存。','Browser storage is unavailable. Changes have not been saved.'],warningNote:['以下是通用核实提示，不代表某个区域、房源或个人存在风险。','以下是一般核實提示，不代表某個區域、房源或個人存在風險。','These are general verification tips, not risk claims about any area, listing or person.'],recordNotice:['仅保存在当前浏览器，不上传。请勿记录身份证、租约个人资料或完整门牌；演示不自动遮盖图片。单次最多 4 张照片，每张 5 MB。','僅儲存於目前瀏覽器，不上傳。請勿記錄身分證、租約個人資料或完整門牌；示範不會自動遮蓋圖片。每次最多 4 張照片，每張 5 MB。','Saved only in this browser; not uploaded. Avoid IDs, personal tenancy details and full unit addresses. Images are not automatically redacted. Up to 4 photos, 5 MB each.'],recordName:['区域 / 自定义名称','區域 / 自訂名稱','Area / record name'],recordNamePH:['例如：西营盘 · 入住检查','例如：西營盤 · 入住檢查','e.g. Sai Ying Pun · Move-in check'],recordDate:['检查日期','檢查日期','Inspection date'],recordNote:['房屋状况备注','房屋狀況備註','Property condition notes'],recordNotePH:['例如：客厅窗框有划痕，浴室水龙头轻微滴水…','例如：客廳窗框有刮痕，浴室水龍頭輕微滴水…','e.g. Scratched window frame; bathroom tap drips…'],recordPhotos:['照片（可选）','照片（可選）','Photos (optional)'],saveRecord:['保存入住记录','儲存入住記錄','Save move-in record'],myRecords:['我的入住记录','我的入住記錄','My move-in records'],reading:['读取中…','讀取中…','Loading…'],photoError:['请选择最多 4 张图片，每张不超过 5 MB。','請選擇最多 4 張圖片，每張不超過 5 MB。','Choose up to 4 image files, no larger than 5 MB each.'],recordValid:['请填写有效的名称和房屋状况。','請填寫有效的名稱和房屋狀況。','Enter a record name and condition notes.'],recordSaved:['入住记录已保存在此浏览器。','入住記錄已儲存於此瀏覽器。','Move-in record saved in this browser.'],recordFailed:['保存失败：浏览器可能禁用了存储，或空间不足。','儲存失敗：瀏覽器可能停用了儲存，或空間不足。','Could not save. Browser storage may be disabled or full.'],noRecords:['还没有记录。完成第一次检查后，可以在这里保存。','尚未有記錄。完成第一次檢查後，可以在這裡儲存。','No records yet. Save your first inspection here.'],readRecordsError:['当前浏览器不允许读取本地记录。','目前瀏覽器不允許讀取本機記錄。','This browser cannot read local records.'],exportText:['导出文字记录','匯出文字記錄','Export text'],deleteRecord:['删除记录','刪除記錄','Delete record'],recordDeleted:['记录已删除。','記錄已刪除。','Record deleted.'],exportNotice:['照片仅保留在当前浏览器，此文字导出不包含照片。','照片僅保留於目前瀏覽器，此文字匯出不包含照片。','Photos remain in this browser and are not included in this text export.'],photoAlt:['房屋状况照片','房屋狀況照片','Property condition photo'],connectTitle:['连接你的 ArcGIS Online Web Map','連接你的 ArcGIS Online Web Map','Connect your ArcGIS Online Web Map'],connectNote:['可读取公开 Web Map。私人地图需后续加入 ArcGIS 登录授权。连接后保留演示图层；不会自动将你的图层用于评分。','可讀取公開 Web Map。私人地圖需後續加入 ArcGIS 登入授權。連接後保留示範圖層；不會自動將你的圖層用於評分。','Public Web Maps are supported. Private maps need a future ArcGIS sign-in flow. Demo layers stay visible; your layers are not automatically included in scoring.'],connectHelp:['复制 32 位 item ID，或粘贴包含 id / webmap 参数的地图链接。','複製 32 位 item ID，或貼上包含 id / webmap 參數的地圖連結。','Paste a 32-character item ID, or a map URL containing an id or webmap parameter.'],webmapLabel:['Web Map item ID 或链接','Web Map item ID 或連結','Web Map item ID or URL'],webmapPH:['32 位地图 item ID','32 位地圖 item ID','32-character Web Map item ID'],loadWebmap:['加载公开 Web Map','載入公開 Web Map','Load public Web Map'],restoreMap:['恢复演示底图','恢復示範底圖','Restore demo basemap'],mapNotReady:['ArcGIS 地图尚未就绪，请稍后重试。','ArcGIS 地圖尚未就緒，請稍後重試。','The ArcGIS map is not ready. Please try again shortly.'],idError:['请输入有效的 32 位 Web Map item ID。','請輸入有效的 32 位 Web Map item ID。','Enter a valid 32-character Web Map item ID.'],loadingWebmap:['正在读取公开地图…','正在讀取公開地圖…','Loading public map…'],mapConnected:['Web Map 已连接，评分仍使用演示模型。','Web Map 已連接，評分仍使用示範模型。','Web Map connected. Scores still use the demo model.'],mapConnectError:['无法读取：请确认 item 是公开 Web Map，且网络可访问 ArcGIS。','無法讀取：請確認 item 是公開 Web Map，且網絡可存取 ArcGIS。','Could not load. Check that the item is a public Web Map and ArcGIS is reachable.'],mapRestored:['已恢复演示底图。','已恢復示範底圖。','Demo basemap restored.'],externalLayers:['Web Map 自带图层','Web Map 自帶圖層','Web Map layers'],noExternal:['连接 Web Map 后可在这里调整其图层。','連接 Web Map 後可在這裡調整其圖層。','Connect a Web Map to control its layers here.'],mapFailure:['ArcGIS 暂时未能连接','ArcGIS 暫時未能連接','Cannot connect to ArcGIS'],mapFailureNote:['请检查网络；筛选、对比与租房记录仍可使用。','請檢查網絡；篩選、對比與租屋記錄仍可使用。','Check your connection. Filters, comparison and rental records still work.'],mapSlow:['地图加载时间较长','地圖載入時間較長','The map is taking longer to load'],mockPoint:['{name}示意点 · 非真实地点','{name}示意點 · 非真實地點','{name} demo point · Fictional location'],mockPointBody:['此点为虚构设施位置，仅用于展示图层交互。正式版将连接真实分店及设施数据。','此點為虛構設施位置，僅用於展示圖層互動。正式版將連接真實分店及設施數據。','This fictional point demonstrates layer interaction. Production will use real branch and amenity data.'],campusPopup:['目的校区：{campus}。近似位置，仅用于演示。','目的校區：{campus}。近似位置，僅用於示範。','Destination: {campus}. Approximate location for demonstration.'],close:['关闭','關閉','Close'],zoomIn:['放大地图','放大地圖','Zoom in'],zoomOut:['缩小地图','縮小地圖','Zoom out'],home:['显示全部推荐区域','顯示全部推薦區域','Show all recommended areas'],basemap:['切换影像与浅色底图','切換影像與淺色底圖','Switch imagery / light basemap'],mapAria:['香港居住区域交互地图','香港居住區域互動地圖','Interactive Hong Kong residential area map'],help:['关于演示','關於示範','About this demo'],fileChoose:['选择照片','選擇照片','Choose photos'],fileCount:['已选择 {n} 张照片','已選擇 {n} 張照片','{n} photo(s) selected']
+};
+const narrative={
+methodTitle:['演示数据与推荐方法','示範數據與推薦方法','Mock data & recommendation method'],methodNote:['本原型不是实时房源平台。地理底图来自 Esri，14 个候选区域为近似位置。租金、通勤和五类设施指数均为人工构造的演示数据；连锁品牌与分店未验证。','本原型不是即時房源平台。地理底圖來自 Esri，14 個候選區域為近似位置。租金、通勤和五類設施指數均為人工構造的示範數據；連鎖品牌與分店未驗證。','This is not a live property platform. Esri supplies the geographic basemap; 14 candidate areas use approximate coordinates. Rent, commute and five amenity indices are synthetic. Chain brands and branches have not been verified.'],methodH1:['01　先筛选，再排序','01　先篩選，再排序','01 Filter, then rank'],methodP1:['按最近一次应用的大学、月租上限和通勤上限筛选；通勤滑杆范围为 5–90 分钟。覆盖 8 所大学目的校区，并非香港全部高等院校。','按最近一次套用的大學、月租上限和通勤上限篩選；通勤滑桿範圍為 5–90 分鐘。涵蓋 8 所大學目的校區，並非香港全部高等院校。','Areas are filtered using the last applied university, rent limit and commute limit. The commute slider spans 5–90 minutes. Eight university campuses are included, not all Hong Kong institutions.'],methodH2:['02　可解释的加权评分','02　可解釋的加權評分','02 Explainable weighted scoring'],methodP2:['租金得分 = 100 ×（预算 − 月租）÷ 预算；通勤得分 = 100 ×（上限 − 时间）÷ 上限；设施得分为已选类别的演示指数平均值。未选设施时，设施分统一为 100。综合分为三项按权重加权平均并四舍五入；至少一项权重须大于 0。','租金得分 = 100 ×（預算 − 月租）÷ 預算；通勤得分 = 100 ×（上限 − 時間）÷ 上限；設施得分為已選類別的示範指數平均值。未選設施時，設施分統一為 100。綜合分為三項按權重加權平均並四捨五入；至少一項權重須大於 0。','Rent score = 100 × (budget − rent) / budget. Commute score = 100 × (limit − time) / limit. Amenity score is the average mock index for selected categories, or 100 when none is selected. Overall score is the rounded weighted average. At least one weight must be positive.'],methodH3:['03　图层开关与分析偏好独立','03　圖層開關與分析偏好獨立','03 Display layers and scoring preferences are separate'],methodP3:['地图面板可分别显示大学、推荐区域、港铁、连锁超市、诊所、连锁健身房和餐厅。图层开关只改变显示，不改变评分；生活设施偏好会在点击探索后更新评分。圆形不是行政边界或通勤服务区，设施图标不是实际 POI。','地圖面板可分別顯示大學、推薦區域、港鐵、連鎖超市、診所、連鎖健身房和餐廳。圖層開關只改變顯示，不改變評分；生活設施偏好會在點擊探索後更新評分。圓形不是行政邊界或通勤服務區，設施圖示不是實際 POI。','Control university, area, MTR, chain supermarket, clinic, chain gym and restaurant layers independently. Layer toggles affect display only; amenity preferences affect scoring after you apply them. Circles are not boundaries or commute service areas. Amenity icons are not real POIs.'],methodH4:['04　后续数据连接','04　後續數據連接','04 Future data integration'],methodP4:['公开 Web Map 可直接连接，自带图层可独立开关。正式版需要租金与设施 Feature Layer，以及网络分析或服务区结果。本原型未执行交通路由、3D 步行网络或社区安全排名。不同语言仅切换本应用文字；外部底图、Web Map 图层名和用户自写内容不自动翻译。','公開 Web Map 可直接連接，自帶圖層可獨立開關。正式版需要租金與設施 Feature Layer，以及網絡分析或服務區結果。本原型未執行交通路由、3D 步行網絡或社區安全排名。不同語言僅切換本應用文字；外部底圖、Web Map 圖層名稱和使用者自寫內容不會自動翻譯。','Public Web Maps can be connected and their layers toggled independently. Production requires rent and amenity Feature Layers plus network or service-area results. This prototype does not compute routes, 3D walking networks or neighbourhood safety rankings. Language switching covers app text; external map labels, Web Map layer names and user-written content are not translated.'],methodH5:['记录与隐私','記錄與隱私','Records & privacy'],methodP5:['检查清单、照片及备注仅保存在当前浏览器，不上传，没有账号同步。请自行备份；清理浏览器可能丢失数据。没有自动遮盖个人资料或法律证据认证功能。','檢查清單、照片及備註僅儲存於目前瀏覽器，不上傳，沒有帳戶同步。請自行備份；清理瀏覽器可能遺失數據。沒有自動遮蓋個人資料或法律證據認證功能。','Checklists, photos and notes stay in this browser with no upload or account sync. Keep your own backups; clearing browser data may erase them. There is no automatic personal-data redaction or legal evidence certification.']};Object.assign(messages,narrative);
+let lang='sc';try{lang=localStorage.getItem('sr-language')||'sc'}catch{}if(!['sc','tc','en'].includes(lang))lang='sc';const requestedLanguage=new URLSearchParams(location.search).get('lang');if(['sc','tc','en'].includes(requestedLanguage))lang=requestedLanguage;
+function t(key,vars={}){let m=messages[key];if(!m)throw new Error('Missing translation: '+key);let s=m[['sc','tc','en'].indexOf(lang)];return s.replace(/\{(\w+)\}/g,(_,k)=>vars[k]??'{'+k+'}')}
+function localized(triple){return triple[['sc','tc','en'].indexOf(lang)]}
+const uniNames={hku:['香港大学','香港大學','The University of Hong Kong'],cuhk:['香港中文大学','香港中文大學','The Chinese University of Hong Kong'],ust:['香港科技大学','香港科技大學','HK University of Science and Technology'],polyu:['香港理工大学','香港理工大學','The Hong Kong Polytechnic University'],cityu:['香港城市大学','香港城市大學','City University of Hong Kong'],bu:['香港浸会大学','香港浸會大學','Hong Kong Baptist University'],edu:['香港教育大学','香港教育大學','The Education University of Hong Kong'],ling:['岭南大学','嶺南大學','Lingnan University']};
+const campusNames={hku:['薄扶林','薄扶林','Pok Fu Lam'],cuhk:['马料水','馬料水','Ma Liu Shui'],ust:['清水湾','清水灣','Clear Water Bay'],polyu:['红磡','紅磡','Hung Hom'],cityu:['九龙塘','九龍塘','Kowloon Tong'],bu:['九龙塘','九龍塘','Kowloon Tong'],edu:['大埔','大埔','Tai Po'],ling:['屯门','屯門','Tuen Mun']};
+const traditionalAreas={kt:'堅尼地城',syp:'西營盤',st:'石塘咀',sw:'上環',tp:'大埔墟',shatin:'沙田',mos:'馬鞍山',tko:'將軍澳',choi:'彩虹',hh:'紅磡',ssp:'深水埗',klt:'九龍塘',tm:'屯門',siuhong:'兆康'};
+function areaName(a){return lang==='en'?a.en:lang==='tc'?(a.tc||traditionalAreas[a.id]||a.name):a.name}
+const areaReasons={
+kt:['校园生活与社区日常相连，适合希望缩短通勤的同学。','校園生活與社區日常相連，適合希望縮短通勤的同學。','A candidate for students who prioritise a shorter campus commute.'],syp:['交通与生活设施较均衡，适合喜欢成熟社区的同学。','交通與生活設施較均衡，適合喜歡成熟社區的同學。','A balanced candidate for students who prefer established neighbourhoods.'],st:['预算与校园距离之间的折中选择，可重点比较楼宇条件。','預算與校園距離之間的折衷選擇，可重點比較樓宇條件。','A budget–commute trade-off. Compare individual building conditions.'],sw:['公共交通选择较多，适合重视城市生活便利的同学。','公共交通選擇較多，適合重視城市生活便利的同學。','An option for students who value urban convenience and transport connections.'],tp:['可作为新界东校区的预算型候选区域。','可作為新界東校區的預算型候選區域。','A budget-oriented candidate for campuses in the eastern New Territories.'],shatin:['可兼顾公共交通及多种生活设施。','可兼顧公共交通及多種生活設施。','A candidate balancing public transport and everyday amenities.'],mos:['可在租金与社区环境之间寻找平衡。','可在租金與社區環境之間尋找平衡。','An area to compare when balancing rental costs and neighbourhood preferences.'],tko:['可作为清水湾校区的通勤候选区域。','可作為清水灣校區的通勤候選區域。','A commute candidate for the Clear Water Bay campus.'],choi:['演示租金较低，适合优先控制预算的同学。','示範租金較低，適合優先控制預算的同學。','Lower mock rents make this a candidate for a tighter budget.'],hh:['可兼顾理大校园与市区生活。','可兼顧理大校園與市區生活。','A candidate balancing the PolyU campus and city life.'],ssp:['演示租金较低，选房时可多比较楼宇与室内条件。','示範租金較低，選房時可多比較樓宇與室內條件。','Lower mock rents; compare individual building and interior conditions.'],klt:['邻近多所大学，适合优先缩短校区通勤的同学。','鄰近多所大學，適合優先縮短校區通勤的同學。','A candidate for students prioritising access to nearby university campuses.'],tm:['演示租金较低，适合以屯门校区为目的地的同学。','示範租金較低，適合以屯門校區為目的地的同學。','Lower mock rents and a candidate for the Tuen Mun campus.'],siuhong:['可重点考察到岭南大学的实际步行条件。','可重點考察到嶺南大學的實際步行條件。','Check the actual pedestrian connections to Lingnan University on a visit.']};
+const checklist=[
+[['确认出租方身份','確認出租方身分','Verify the landlord'],['核对对方是否有权出租，并交叉核实其提供的资料。','核對對方是否有權出租，並交叉核實其提供的資料。','Check the right to let and cross-check the information provided.']],
+[['实地查看房屋','實地查看房屋','Inspect the property'],['检查门锁、窗户、供水、电器及公共空间，记录已有损坏。','檢查門鎖、窗戶、供水、電器及公共空間，記錄已有損壞。','Check locks, windows, water, appliances and shared areas; document existing damage.']],
+[['核对费用与租住条件','核對費用與租住條件','Confirm costs and conditions'],['逐项确认租金、押金、水电、管理费及退租安排，保留书面记录。','逐項確認租金、按金、水電、管理費及退租安排，保留書面記錄。','Confirm rent, deposit, utilities, fees and move-out arrangements in writing.']],
+[['看清文件后再付款','看清文件後再付款','Review documents before paying'],['确认房屋和收款方资料，警惕催促付款、拒绝看房或异常低价。','確認房屋和收款方資料，留意催促付款、拒絕看房或異常低價。','Verify property and payee details; watch for rushed payments, refused viewings or unusually low prices.']],
+[['保存沟通和付款记录','儲存溝通和付款記錄','Keep communication and receipts'],['整理合同、收据与重要沟通记录，保留自己的备份。','整理合約、收據與重要溝通記錄，保留自己的備份。','Keep your own copies of agreements, receipts and important conversations.']],
+[['入住前完成检查','入住前完成檢查','Complete a move-in check'],['用带日期的备注与照片记录现况，与出租方确认，不要拍入他人隐私。','用附日期的備註與照片記錄現況，與出租方確認，避免拍到他人私隱。','Record conditions with dated notes and photos, confirm them with the landlord and avoid others’ private details.']]
+];
+const warnings=[
+[['价格明显异常','價格明顯異常','Unusual prices'],['与多处同类房源比较，询问低价原因，避免只因价格而立即付款。','與多處同類房源比較，詢問低價原因，避免只因價格而立即付款。','Compare similar listings and ask why the price differs before making a payment.']],
+[['催促先付押金','催促先付按金','Pressure to pay first'],['身份、房屋与书面条件尚未核实前，不因“很多人等着租”而仓促决定。','身分、房屋與書面條件尚未核實前，不因「很多人等著租」而倉促決定。','Do not rush because of claims that others are waiting; verify identities, the property and written terms first.']],
+[['资料前后不一致','資料前後不一致','Inconsistent details'],['核对地址、收款人与出租方资料，对矛盾之处要求解释。','核對地址、收款人與出租方資料，對矛盾之處要求解釋。','Cross-check the address, payee and landlord details and ask about inconsistencies.']],
+[['拒绝看房或核实身份','拒絕看房或核實身分','Refused viewings or verification'],['先完成必要核实并保留沟通记录；有疑问可向大学学生事务部门寻求帮助。','先完成必要核實並保留溝通記錄；有疑問可向大學學生事務部門尋求協助。','Complete the checks and keep communications. Your university student services may be able to help.']]
+];
+
+</script><script>
+'use strict';
+Object.assign(messages,{
+listings:['房源样例','房源樣例','Sample properties'],viewListings:['查看房源样例（{n}）','查看房源樣例（{n}）','View sample properties ({n})'],listingTitle:['{area} · 房源样例','{area} · 房源樣例','{area} · Sample properties'],listingIntro:['以下是界面测试资料，不是真实放盘，不可预约或付款。平台入口用于自行查找该区房源，并非样例的原始放盘链接。','以下為介面測試資料，並非真實放盤，不可預約或付款。平台入口供自行尋找該區房源，並非樣例的原始放盤連結。','These are interface test records, not real listings. They cannot be booked or paid for. Portal links help you search for homes; they are not original adverts for these samples.'],listingCount:['{n} 条测试房源','{n} 條測試房源','{n} test properties'],allTypes:['全部房型','全部房型','All types'],room:['合租单间','合租單間','Shared-flat room'],entire_unit:['整租单位','整租單位','Entire flat'],budgetOnly:['仅看预算内样例','只看預算內樣例','Within-budget samples only'],withinBudget:['预算内 · 模拟','預算內 · 模擬','Within budget · Mock'],aboveBudget:['超出预算','超出預算','Above budget'],testOnly:['虚构测试房源','虛構測試房源','Fictional test property'],fixtureOrigin:['原离线测试样本','原離線測試樣本','Original offline fixture'],generatedOrigin:['新增界面测试样本','新增介面測試樣本','Added UI test fixture'],listingRoomTitle:['{area} · 合租单间样例','{area} · 合租單間樣例','{area} · Shared-room sample'],listingFlatTitle:['{area} · 两房整租样例','{area} · 兩房整租樣例','{area} · Two-bedroom flat sample'],roomArea:['测试房间面积','測試房間面積','Test room area'],saleableArea:['实用面积 · 测试值','實用面積 · 測試值','Saleable area · Test value'],sqft:['{n} 平方呎','{n} 平方呎','{n} sq ft'],beds:['{n} 房','{n} 房','{n} bed(s)'],baths:['{n} 浴室','{n} 浴室','{n} bath(s)'],sharedBath:['共用浴室','共用浴室','Shared bathroom'],demoBuilding:['示范大厦 · 中层（虚构）','示範大廈 · 中層（虛構）','Demo building · Mid floor (fictional)'],viewSample:['查看测试详情 →','查看測試詳情 →','View test details →'],sampleLink:['测试详情链接','測試詳情連結','Test record link'],noExternalListing:['此测试记录没有真实放盘链接。','此測試記錄沒有真實放盤連結。','This test record has no real property advert.'],portalSearch:['前往平台查找真实房源','前往平台尋找真實房源','Search for real properties on a portal'],regionalSearch:['28Hse · 区域租盘入口 ↗','28Hse · 區域租盤入口 ↗','28Hse · Area rental search ↗'],otherPortals:['其他平台租盘入口','其他平台租盤入口','Other rental portals'],portalManual:['中原和利嘉阁链接打开租盘首页，请在平台内搜索「{area}」。','中原及利嘉閣連結開啟租盤首頁，請於平台內搜尋「{area}」。','Centaline and Ricacorp links open their rental home pages. Search for “{area}” there.'],coverage_exact:['平台按该区域展示租盘，实时内容请在平台核实。','平台按該區域展示租盤，即時內容請於平台核實。','The portal searches this area. Check its current results directly.'],coverage_syp_st:['平台搜索范围：西营盘及石塘咀，可能包含生活圈以外的房源。','平台搜尋範圍：西營盤及石塘咀，可能包括生活圈以外的房源。','Portal coverage: Sai Ying Pun and Shek Tong Tsui; results may extend beyond this area.'],coverage_central_sw:['平台搜索范围：中环及上环。','平台搜尋範圍：中環及上環。','Portal coverage: Central and Sheung Wan.'],coverage_tai_po_group:['平台搜索范围：大埔、太和及白石角，范围大于大埔墟生活圈。','平台搜尋範圍：大埔、太和及白石角，範圍大於大埔墟生活圈。','Portal coverage: Tai Po, Tai Wo and Pak Shek Kok, wider than Tai Po Market.'],coverage_sha_tin_group:['平台搜索范围：沙田、大围及火炭。','平台搜尋範圍：沙田、大圍及火炭。','Portal coverage: Sha Tin, Tai Wai and Fo Tan.'],coverage_ngau_chi_wan:['平台搜索范围：牛池湾及周边，并非精确的彩虹生活圈。','平台搜尋範圍：牛池灣及周邊，並非精確的彩虹生活圈。','Portal coverage: Ngau Chi Wan and nearby areas, not an exact Choi Hung boundary.'],coverage_ssp_group:['平台搜索范围：深水埗、石硖尾及南昌。','平台搜尋範圍：深水埗、石硤尾及南昌。','Portal coverage: Sham Shui Po, Shek Kip Mei and Nam Cheong.'],coverage_tuen_mun:['平台搜索范围：屯门；兆康暂使用屯门较大范围入口。','平台搜尋範圍：屯門；兆康暫使用屯門較大範圍入口。','Portal coverage: Tuen Mun. Siu Hong uses this wider Tuen Mun entry.'],budgetContext:['当前预算：HK$ {budget} / 月；区域推荐仍按合租单间演示租金计算。整租样例单独展示，不参与区域评分。','目前預算：HK$ {budget} / 月；區域推薦仍按合租單間示範租金計算。整租樣例獨立展示，不參與區域評分。','Current budget: HK$ {budget}/month. Area recommendations still use mock shared-room rents. Entire-flat samples are separate and do not affect area scores.'],noMatchingSamples:['当前筛选下没有测试房源，可切换房型或取消预算筛选。','目前篩選下沒有測試房源，可切換房型或取消預算篩選。','No test properties match. Change the type or turn off the budget filter.'],testRecordId:['测试记录编号','測試記錄編號','Test record ID'],testRecordedAt:['测试资料日期','測試資料日期','Test record date'],testSource:['数据来源','數據來源','Data origin'],testScope:['租住类型','租住類型','Rental type'],testNote:['用途说明','用途說明','Purpose'],testNoteBody:['这条记录仅用于检验生活圈到房源详情的交互。没有真实地址、联系人、现场照片或可用性保证。','此記錄僅用於測試生活圈至房源詳情的互動。沒有真實地址、聯絡人、現場照片或可租狀態保證。','This record tests the area-to-property flow. It has no real address, contact, property photos or availability guarantee.'],testSourceBody:['西营盘单间记录保留自已有离线测试结果；其他区域的样例按当前演示模型生成，未冒充爬取结果。','西營盤單間記錄保留自現有離線測試結果；其他區域樣例按目前示範模型產生，並非爬取結果。','The Sai Ying Pun room comes from an existing offline test output. Other samples were generated from the demo model and are not scraped results.'],returnListings:['← 返回该区房源','← 返回該區房源','← Back to area properties'],showMap:['查看生活圈地图','查看生活圈地圖','View area on map'],copied:['测试详情链接已复制。','測試詳情連結已複製。','Test record link copied.'],linkHelp:['样例链接只打开本 app 的测试详情，不会跳到虚构的外部房源。','樣例連結只會開啟本 app 的測試詳情，不會跳至虛構的外部房源。','Sample links open test details in this app, never a fabricated external advert.'],listingCardHint:['查看房源与链接 →','查看房源及連結 →','Properties & links →'],listingMini:['{n} 条样例 · 含详情及平台入口','{n} 條樣例 · 附詳情及平台入口','{n} samples · Details & portal links'],listingIconLabel:['示意图，非实景照片','示意圖，非實景照片','Illustration, not a property photograph'],listingSideNote:['先选生活圈，再查看房源与平台入口。','先選生活圈，再查看房源及平台入口。','Choose an area, then explore properties and portal links.']
+});
+messages.demo=['交互示范 · 含测试房源','互動示範 · 含測試房源','Interactive demo · Test properties'];
+messages.footer=['原型 v0.3 · 推荐模型及房源均为模拟数据','原型 v0.3 · 推薦模型及房源均為模擬數據','Prototype v0.3 · Mock recommendations and test properties'];
+messages.sideNote=messages.listingSideNote;
+messages.methodNote=['本原型不提供实时放盘。地理底图来自 Esri，14 个候选区域为近似位置，推荐模型使用模拟租金、通勤及设施指数。房源页接入了 1 条已有离线样本与 27 条新增界面测试记录，全部为虚构资料；真实平台入口不等于这些样例的原始放盘。','本原型不提供即時放盤。地理底圖來自 Esri，14 個候選區域為近似位置，推薦模型使用模擬租金、通勤及設施指數。房源頁接入 1 條現有離線樣本及 27 條新增介面測試記錄，全部為虛構資料；真實平台入口並非這些樣例的原始放盤。','This is not a live listings service. Esri provides the basemap; 14 candidate areas use approximate locations and mock rent, commute and amenity scores. Property pages contain one existing offline fixture and 27 added UI test records, all fictional. Real portal entry links are not original adverts for these samples.'];
+
+</script><script>
+'use strict';
+const rentalData={
+  "version": "0.3-test-listings",
+  "as_of": "2026-11-05",
+  "records": [
+    {
+      "id": "ui-kt-room",
+      "area_id": "kt",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 7800,
+      "rent_scope": "room",
+      "saleable_sqft": 130,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-kt-entire_unit",
+      "area_id": "kt",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 18700,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 320,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "fixture-syp-1",
+      "area_id": "syp",
+      "is_synthetic": true,
+      "origin": "offline_fixture",
+      "rent_hkd_month": 8000.0,
+      "rent_scope": "room",
+      "saleable_sqft": 180.0,
+      "area_measurement": "fixture_saleable",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": "1"
+    },
+    {
+      "id": "ui-syp-entire_unit",
+      "area_id": "syp",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 18000,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 345,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-st-room",
+      "area_id": "st",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 6500,
+      "rent_scope": "room",
+      "saleable_sqft": 150,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-st-entire_unit",
+      "area_id": "st",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 15600,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 370,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-sw-room",
+      "area_id": "sw",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 8000,
+      "rent_scope": "room",
+      "saleable_sqft": 160,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-sw-entire_unit",
+      "area_id": "sw",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 19200,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 395,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-tp-room",
+      "area_id": "tp",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 5800,
+      "rent_scope": "room",
+      "saleable_sqft": 170,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-tp-entire_unit",
+      "area_id": "tp",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 13900,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 420,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-shatin-room",
+      "area_id": "shatin",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 6800,
+      "rent_scope": "room",
+      "saleable_sqft": 130,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-shatin-entire_unit",
+      "area_id": "shatin",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 16300,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 445,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-mos-room",
+      "area_id": "mos",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 6200,
+      "rent_scope": "room",
+      "saleable_sqft": 140,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-mos-entire_unit",
+      "area_id": "mos",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 14900,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 320,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-tko-room",
+      "area_id": "tko",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 7200,
+      "rent_scope": "room",
+      "saleable_sqft": 150,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-tko-entire_unit",
+      "area_id": "tko",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 17300,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 345,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-choi-room",
+      "area_id": "choi",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 5600,
+      "rent_scope": "room",
+      "saleable_sqft": 160,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-choi-entire_unit",
+      "area_id": "choi",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 13400,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 370,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-hh-room",
+      "area_id": "hh",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 7000,
+      "rent_scope": "room",
+      "saleable_sqft": 170,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-hh-entire_unit",
+      "area_id": "hh",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 16800,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 395,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-ssp-room",
+      "area_id": "ssp",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 5500,
+      "rent_scope": "room",
+      "saleable_sqft": 130,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-ssp-entire_unit",
+      "area_id": "ssp",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 13200,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 420,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-klt-room",
+      "area_id": "klt",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 8500,
+      "rent_scope": "room",
+      "saleable_sqft": 140,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-klt-entire_unit",
+      "area_id": "klt",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 20400,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 445,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-tm-room",
+      "area_id": "tm",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 5200,
+      "rent_scope": "room",
+      "saleable_sqft": 150,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-tm-entire_unit",
+      "area_id": "tm",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 12500,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 320,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-siuhong-room",
+      "area_id": "siuhong",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 5800,
+      "rent_scope": "room",
+      "saleable_sqft": 160,
+      "area_measurement": "demo_room_area",
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "bathroom_shared": true,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    },
+    {
+      "id": "ui-siuhong-entire_unit",
+      "area_id": "siuhong",
+      "is_synthetic": true,
+      "origin": "generated_ui_fixture",
+      "rent_hkd_month": 13900,
+      "rent_scope": "entire_unit",
+      "saleable_sqft": 345,
+      "area_measurement": "demo_saleable",
+      "bedrooms": 2,
+      "bathrooms": 1,
+      "bathroom_shared": false,
+      "floor_zone": "mid",
+      "currency": "HKD",
+      "rent_period": "month",
+      "recorded_at": "2026-11-05",
+      "listing_url": null,
+      "source_fixture_id": null
+    }
+  ],
+  "area_search_links": {
+    "kt": {
+      "url": "https://www.28hse.com/en/rent/a1/dg121",
+      "coverage": "exact"
+    },
+    "syp": {
+      "url": "https://www.28hse.com/en/rent/a1/dg1",
+      "coverage": "syp_st"
+    },
+    "st": {
+      "url": "https://www.28hse.com/en/rent/a1/dg1",
+      "coverage": "syp_st"
+    },
+    "sw": {
+      "url": "https://www.28hse.com/en/rent/a1/dg2",
+      "coverage": "central_sw"
+    },
+    "tp": {
+      "url": "https://www.28hse.com/en/rent/a3/dg45",
+      "coverage": "tai_po_group"
+    },
+    "shatin": {
+      "url": "https://www.28hse.com/en/rent/a3/dg44",
+      "coverage": "sha_tin_group"
+    },
+    "mos": {
+      "url": "https://www.28hse.com/en/rent/a3/dg43",
+      "coverage": "exact"
+    },
+    "tko": {
+      "url": "https://www.28hse.com/en/rent/a3/dg41",
+      "coverage": "exact"
+    },
+    "choi": {
+      "url": "https://www.28hse.com/en/rent/a2/dg122",
+      "coverage": "ngau_chi_wan"
+    },
+    "hh": {
+      "url": "https://www.28hse.com/en/rent/a2/dg31",
+      "coverage": "exact"
+    },
+    "ssp": {
+      "url": "https://www.28hse.com/en/rent/a2/dg26",
+      "coverage": "ssp_group"
+    },
+    "klt": {
+      "url": "https://www.28hse.com/en/rent/a2/dg25",
+      "coverage": "exact"
+    },
+    "tm": {
+      "url": "https://www.28hse.com/en/rent/a3/dg48",
+      "coverage": "tuen_mun"
+    },
+    "siuhong": {
+      "url": "https://www.28hse.com/en/rent/a3/dg48",
+      "coverage": "tuen_mun"
+    }
+  },
+  "providers": [
+    {
+      "id": "28hse",
+      "name": [
+        "28Hse",
+        "28Hse",
+        "28Hse"
+      ],
+      "url": "https://www.28hse.com/en/rent/apartment"
+    },
+    {
+      "id": "centaline",
+      "name": [
+        "中原地产",
+        "中原地產",
+        "Centaline"
+      ],
+      "url": "https://hk.centanet.com/findproperty/list/rent"
+    },
+    {
+      "id": "ricacorp",
+      "name": [
+        "利嘉阁",
+        "利嘉閣",
+        "Ricacorp"
+      ],
+      "url": "https://www.ricacorp.com/zh-hk/property/list/rent"
+    }
+  ],
+  "provenance": {
+    "offline_fixture_records": 1,
+    "generated_ui_fixture_records": 27,
+    "unmapped_test_fixtures": 3,
+    "notes": "Every property record is synthetic. A Sai Ying Pun test result is preserved; other test fixtures have synthetic/unknown districts and are not falsely assigned to real areas. UI fixtures fill remaining areas solely for interaction testing. Portal links are observed search entry points, never property-specific links."
+  }
+};
+
+</script><script>
+'use strict';
+let listingAreaId=null,listingTypeFilter='all',listingBudgetOnly=false,listingDetailId=null;
+function areaListings(areaId){return rentalData.records.filter(r=>r.area_id===areaId)}
+function filteredListings(areaId){return areaListings(areaId).filter(r=>(listingTypeFilter==='all'||r.rent_scope===listingTypeFilter)&&(!listingBudgetOnly||r.rent_hkd_month<=applied.budget)).sort((a,b)=>a.rent_hkd_month-b.rent_hkd_month)}
+function listingName(r){const a=areas.find(x=>x.id===r.area_id);return t(r.rent_scope==='room'?'listingRoomTitle':'listingFlatTitle',{area:areaName(a)})}
+function originName(r){return t(r.origin==='offline_fixture'?'fixtureOrigin':'generatedOrigin')}
+function safePortalUrl(value){try{let u=new URL(value);return u.protocol==='https:'&&['www.28hse.com','hk.centanet.com','www.ricacorp.com'].includes(u.hostname)&&!u.username&&!u.password?u.href:null}catch{return null}}
+function providerLinks(areaId){const a=areas.find(x=>x.id===areaId),entry=rentalData.area_search_links[areaId],regional=safePortalUrl(entry?.url);return`<section class="portal-section"><h3>${t('portalSearch')}</h3>${regional?`<a class="portal-main" href="${esc(regional)}" target="_blank" rel="noopener noreferrer">${t('regionalSearch')}</a><p class="portal-coverage">${t('coverage_'+entry.coverage)}</p>`:''}<div class="provider-row">${rentalData.providers.filter(p=>p.id!=='28hse').map(p=>{const url=safePortalUrl(p.url);return url?`<a class="portal-secondary" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(localized(p.name))} ↗</a>`:''}).join('')}</div><p class="portal-coverage">${t('portalManual',{area:areaName(a)})}</p></section>`}
+function listingIllustration(){return`<svg viewBox="0 0 160 120" role="img" aria-label="${t('listingIconLabel')}"><path d="M23 98h114M35 98V44l44-24 45 24v54M49 98V59h25v39M88 56h20v20H88ZM88 87h20" fill="none" stroke="currentColor" stroke-width="2"/><path d="M32 43 79 17l49 26" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="16" cy="24" r="8" fill="currentColor" opacity=".14"/></svg>`}
+function listingCard(r){const a=areas.find(x=>x.id===r.area_id),within=r.rent_hkd_month<=applied.budget;return`<article class="rental-card" data-listing-card="${r.id}"><div class="rental-art">${listingIllustration()}<span>${['示范','示範','Demo'][['sc','tc','en'].indexOf(lang)]}</span></div><div class="rental-content"><div class="rental-badges"><span class="test-badge">${t('testOnly')}</span><span class="budget-badge ${within?'':'over'}">${t(within?'withinBudget':'aboveBudget')}</span></div><h3>${esc(listingName(r))}</h3><div class="rental-meta">${esc(areaName(a))} · ${t(r.rent_scope)} · ${t('demoBuilding')}</div><div class="rental-price">HK$ ${fmt(r.rent_hkd_month)} <small>${t('perMonth')}</small></div><div class="rental-facts"><span>${t('sqft',{n:r.saleable_sqft})} · ${t(r.area_measurement==='demo_room_area'?'roomArea':'saleableArea')}</span><span>${t('beds',{n:r.bedrooms})}</span><span>${r.bathroom_shared?t('sharedBath'):t('baths',{n:r.bathrooms})}</span></div><div class="rental-origin">${esc(originName(r))} · ${esc(r.recorded_at)}</div><a href="#sample=${encodeURIComponent(r.id)}" data-listing="${esc(r.id)}" class="sample-detail-link" aria-label="${esc(t('sampleLink'))}">${t('viewSample')}</a></div></article>`}
+function bindListingLinks(){document.querySelectorAll('[data-listing]').forEach(b=>b.onclick=e=>{e.preventDefault();openListingDetail(b.dataset.listing)})}
+function openListings(areaId,reset=false){if(importedRentals.length){showImportedListings(areaId,reset);return;}let a=areas.find(x=>x.id===areaId);if(!a)return;if(reset){listingTypeFilter='all';listingBudgetOnly=false}listingAreaId=areaId;listingDetailId=null;let list=filteredListings(areaId);modal(t('listingTitle',{area:areaName(a)}),`<div class="notice">${t('listingIntro')}</div><div class="rental-toolbar"><div class="rental-tabs">${['all','room','entire_unit'].map(k=>`<button class="${listingTypeFilter===k?'selected':''}" data-rental-type="${k}" aria-pressed="${listingTypeFilter===k}">${t(k==='all'?'allTypes':k)}</button>`).join('')}</div><label class="budget-toggle"><input type="checkbox" id="rentalBudgetOnly" ${listingBudgetOnly?'checked':''}>${t('budgetOnly')}</label></div><p class="rental-context">${t('budgetContext',{budget:fmt(applied.budget)})}</p><div class="rental-list-header"><strong>${t('listingCount',{n:list.length})}</strong><button id="rentalShowMap">${t('showMap')} ↗</button></div><div class="rental-list">${list.length?list.map(listingCard).join(''):`<div class="empty">${t('noMatchingSamples')}</div>`}</div>${providerLinks(areaId)}<p class="rental-smallprint">${t('testSourceBody')}</p>`,'listings');$('modalBody').querySelectorAll('[data-rental-type]').forEach(b=>b.onclick=()=>{listingTypeFilter=b.dataset.rentalType;openListings(areaId)});$('rentalBudgetOnly').onchange=e=>{listingBudgetOnly=e.target.checked;openListings(areaId)};$('rentalShowMap').onclick=()=>{$('modal').close();selectArea(areaId,true,false)};bindListingLinks()}
+function openListingDetail(id){const r=rentalData.records.find(x=>x.id===id);if(!r)return;listingDetailId=id;listingAreaId=r.area_id;const a=areas.find(x=>x.id===r.area_id);modal(listingName(r),`<button class="listing-back" id="listingBack">${t('returnListings')}</button><div class="notice">${t('listingIntro')}</div><div class="sample-detail-top"><div class="sample-art">${listingIllustration()}<span>${['示范','示範','Demo'][['sc','tc','en'].indexOf(lang)]}</span></div><div><span class="test-badge">${t('testOnly')}</span><h3>${esc(listingName(r))}</h3><div class="rental-price">HK$ ${fmt(r.rent_hkd_month)} <small>${t('perMonth')}</small></div><p>${t('demoBuilding')}</p></div></div><dl class="listing-field-grid">${[[t('testRecordId'),r.id],[t('testSource'),originName(r)],[t('testRecordedAt'),r.recorded_at],[t('testScope'),t(r.rent_scope)],[t(r.area_measurement==='demo_room_area'?'roomArea':'saleableArea'),t('sqft',{n:r.saleable_sqft})],[t('recordName'),areaName(a)]].map(([k,v])=>`<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl><h3>${t('testNote')}</h3><p>${t('testNoteBody')}</p><p class="rental-smallprint">${t('noExternalListing')} ${t('linkHelp')}</p>${providerLinks(r.area_id)}`,'listingDetail');$('listingBack').onclick=()=>openListings(r.area_id)}
+function renderListingPreview(areaId){if(importedRentals.length){const n=results.find(row=>row.id===areaId)?.rows.length??0;return `<div class='detail-rentals'><strong>${t('fileRecords',{n})}</strong><button class='listing-open' data-area-listings='${areaId}'>${t('listingCardHint')}</button></div>`;}const rows=areaListings(areaId);return`<div class="detail-rentals"><div class="detail-rental-heading"><strong>${t('listings')}</strong><span class="test-badge">${['示范','示範','Demo'][['sc','tc','en'].indexOf(lang)]}</span></div><p>${t('listingMini',{n:rows.length})}</p><button class="listing-open" data-area-listings="${areaId}">${t('viewListings',{n:rows.length})} →</button></div>`}
+function restoreListingDialog(){if(modalKind==='listings'&&listingAreaId)openListings(listingAreaId);else if(modalKind==='listingDetail'&&listingDetailId)openListingDetail(listingDetailId)}
+function openRentalFromHash(){const hash=typeof location!=='undefined'?(location.hash||''):'';const match=hash.match(/^#sample=([A-Za-z0-9-]+)$/);if(match&&rentalData.records.some(r=>r.id===match[1]))openListingDetail(match[1])}
+
+</script><script>
+'use strict';
+
+const arcgisExperience = 'https://experience.arcgis.com/experience/8d8a3e1221ca4913a779c9e1658f47ba';
+const nativePages = [
+  ['/page/Simplified?locale=zh-cn', '/page/Guide-Simplified?locale=zh-cn'],
+  ['/page/Traditional?locale=zh-hk', '/page/Guide-Traditional?locale=zh-hk'],
+  ['/page/English?locale=en-us', '/page/Guide-English?locale=en-us']
+];
+
+Object.assign(messages, {
+  languagePicker: ['选择语言', '選擇語言', 'Choose language'],
+  tagline: ['香港学生租房地图', '香港學生租屋地圖', 'Hong Kong student rental map'],
+  sideTitle: ['租房条件', '租屋條件', 'Rental preferences'],
+  dataOpen: ['打开 ArcGIS 房源', '開啟 ArcGIS 租盤', 'Open ArcGIS rentals'],
+  dataImport: ['导入房源表', '匯入租盤表格', 'Import rental CSV'],
+  dataDialog: ['房源数据', '租盤資料', 'Rental data'],
+  dataIntro: ['可登录 ArcGIS 查看原有房源，也可在当前浏览器导入房源 CSV。', '可登入 ArcGIS 查看原有租盤，亦可在目前瀏覽器匯入租盤 CSV。', 'Sign in to view the existing ArcGIS listings, or import a rental CSV into this browser.'],
+  fileLocal: ['导入只在当前页面处理，不会上传。刷新后可重新导入。', '匯入只在目前頁面處理，不會上載。重新整理後可再次匯入。', 'The CSV stays in this page and is never uploaded. Import it again after reloading.'],
+  badImport: ['无法读取房源表。请检查原有 CSV 的表头、坐标、租金与通勤列。', '無法讀取租盤表格。請檢查原有 CSV 的欄名、坐標、租金與通勤欄。', 'Could not read the rental CSV. Check its headers, coordinates, rents and commute times.'],
+  imported: ['已导入 {n} 条房源', '已匯入 {n} 筆租盤', 'Imported {n} rentals'],
+  importedMode: ['已导入 · 房源样本', '已匯入 · 租盤樣本', 'Imported rental sample'],
+  importedNote: ['按当前大学、预算和通勤筛选原表房源。生活圈使用符合条件房源的租金和通勤中位数。表中没有设施指标时，评分只用租金和通勤；原始放盘状态请在平台核实。', '按目前大學、預算及通勤篩選原表租盤。生活圈使用合乎條件租盤的租金及通勤中位數。表內沒有設施指標時，評分只用租金及通勤；原始放盤狀態請於平台核實。', 'Rentals are filtered by campus, budget and commute. Area cards use the median rent and commute of matching records. If facility fields are absent, scoring uses rent and commute only. Verify availability on the original portal.'],
+  fileRecords: ['{n} 条房源', '{n} 筆租盤', '{n} rentals'],
+  original: ['打开原始房源 ↗', '開啟原始租盤 ↗', 'Open original listing ↗'],
+  locateListing: ['地图定位', '地圖定位', 'Locate on map'],
+  noMap: ['地图尚未加载。', '地圖尚未載入。', 'The map has not loaded yet.'],
+  returnDemo: ['恢复示范数据', '恢復示範資料', 'Restore demo data'],
+  sampleRent: ['月租中位数', '月租中位數', 'Median monthly rent'],
+  sampleTime: ['通勤中位数', '通勤中位數', 'Median commute'],
+  noAmenities: ['此表未提供设施指标', '此表未提供設施指標', 'Facility indicators unavailable in this file'],
+  importedFacilities: ['真实设施请在 ArcGIS 地图中查看。', '真實設施請在 ArcGIS 地圖查看。', 'View the actual facility layers on the ArcGIS map.'],
+  nativeGuide: ['ArcGIS 租住指南', 'ArcGIS 租住指南', 'ArcGIS renting guide']
+});
+
+function nativeUrl(index) {
+  return arcgisExperience + nativePages[['sc', 'tc', 'en'].indexOf(lang)][index];
+}
+
+function readCsv(input) {
+  const rows = [];
+  let row = [], cell = '', quoted = false;
+  input = input.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (ch === '"' && quoted && input[i + 1] === '"') {
+      cell += ch;
+      i++;
+    } else if (ch === '"' && (quoted || cell === '')) {
+      quoted = !quoted;
+    } else if (!quoted && (ch === ',' || ch === '\n')) {
+      row.push(cell);
+      cell = '';
+      if (ch === '\n') {
+        rows.push(row);
+        row = [];
+      }
+    } else {
+      cell += ch;
+    }
+  }
+  if (quoted) throw new Error('Unclosed field');
+  if (row.length || cell) rows.push([...row, cell]);
+  const fields = rows.shift()?.map(value => value.trim()) || [];
+  const needed = ['ListingID','TargetUni','District','BuildingName','RoomType','MonthlyRentHKD','ListingURL','Lat','Lon','TotalCommuteMin'];
+  if (needed.some(field => !fields.includes(field))) throw new Error('Missing field');
+  const ids = new Set();
+  return rows.filter(row => row.some(Boolean)).map(row => {
+    if (row.length !== fields.length) throw new Error('Mismatched field count');
+    const data = Object.fromEntries(fields.map((field, i) => [field, row[i].trim()]));
+    const number = field => data[field] ? Number(data[field]) : NaN;
+    const record = {
+      id: data.ListingID,
+      campus: data.TargetUni.toLowerCase(),
+      district: data.District,
+      title: data.BuildingName || data.District,
+      type: data.RoomType,
+      area: number('SaleableAreaSqFt'),
+      rent: number('MonthlyRentHKD'),
+      minutes: number('TotalCommuteMin'),
+      xy: [number('Lon'), number('Lat')],
+      url: safePortalUrl(data.ListingURL),
+      facilities: ['NearMTR', 'NearSupermarket', 'NearClinic', 'NearGym', 'NearRestaurant'].map(number)
+    };
+    if (!record.id || ids.has(record.id) || !record.district || !Object.hasOwn(campuses, record.campus) || !(record.rent > 0) || !(record.minutes > 0) || !(record.xy[0] >= 113 && record.xy[0] <= 115 && record.xy[1] >= 22 && record.xy[1] <= 23)) throw new Error('Invalid rental');
+    ids.add(record.id);
+    return record;
+  });
+}
+
+let importedRentals = [];
+const demoAreas = [...areas];
+const defaultBudgetMax = 16000;
+const median = xs => {
+  const values = xs.toSorted((a, b) => a - b);
+  const middle = Math.floor(values.length / 2);
+  return values.length % 2 ? values[middle] : (values[middle - 1] + values[middle]) / 2;
+};
+
+function importedAreas(query) {
+  const groups = new Map();
+  for (const row of importedRentals) {
+    if (row.campus !== query.uni) continue;
+    if (!groups.has(row.district)) groups.set(row.district, []);
+    groups.get(row.district).push(row);
+  }
+  const next = [];
+  for (const [district, rows] of groups) {
+    const matches = rows.filter(row => row.rent <= query.budget && row.minutes <= query.minutes);
+    if (!matches.length) continue;
+    const values = facilityKeys.map((_, i) => {
+      const flags = matches.map(row => row.facilities[i]).filter(flag => flag === 0 || flag === 1);
+      return flags.length === matches.length ? Math.round(100 * flags.reduce((sum, f) => sum + f, 0) / flags.length) : null;
+    });
+    const known = demoAreas.find(area => area.en.toLowerCase() === district.toLowerCase());
+    const id = `csv-${importedRentals.findIndex(row => row.campus === query.uni && row.district === district)}`;
+    next.push({id, en: district, name: known?.name || district, tc: known ? traditionalAreas[known.id] : district, rent: median(matches.map(r => r.rent)), time: median(matches.map(r => r.minutes)), xy: [0, 1].map(i => median(matches.map(r => r.xy[i]))), poi: values, rows});
+  }
+  return next;
+}
+
+function rankAreas(query, campusIndex) {
+  const candidates = importedRentals.length ? importedAreas(query) : demoAreas.filter(a => a.rent <= query.budget && a.times[campusIndex] <= query.minutes);
+  const ordered = candidates.map(area => {
+    const time = area.time ?? area.times[campusIndex];
+    const preferenceValues = query.prefs.map(key => area.poi[facilityKeys.indexOf(key)]).filter(Number.isFinite);
+    const fs = preferenceValues.length ? preferenceValues.reduce((x, y) => x + y, 0) / preferenceValues.length : importedRentals.length ? null : 100;
+    const rs = Math.max(0, 100 * (1 - area.rent / query.budget));
+    const ts = Math.max(0, 100 * (1 - time / query.minutes));
+    const [rentWeight, timeWeight, requestedFacilityWeight] = query.weights;
+    const facilityWeight = fs === null ? 0 : requestedFacilityWeight;
+    const denominator = rentWeight + timeWeight + facilityWeight;
+    const score = denominator ? Math.round((rs * rentWeight + ts * timeWeight + (fs ?? 0) * facilityWeight) / denominator) : 0;
+    return {...area, time, fs, rs, ts, score};
+  }).sort((a, b) => b.score - a.score || a.rent - b.rent);
+  if (importedRentals.length) areas.splice(0, areas.length, ...ordered);
+  return ordered;
+}
+
+function showImportedListings(areaId, reset) {
+  const area = results.find(result => result.id === areaId);
+  if (!area) return;
+  listingAreaId = areaId;
+  listingDetailId = null;
+  if (reset) { listingTypeFilter = 'all'; listingBudgetOnly = false; }
+  const scope = row => /^(single room|shared room|room)$/i.test(row.type) ? 'room' : 'entire_unit';
+  const rows = area.rows.filter(row => (listingTypeFilter === 'all' || scope(row) === listingTypeFilter) && (!listingBudgetOnly || row.rent <= applied.budget)).toSorted((a,b) => a.rent - b.rent);
+  const tabs = ['all', 'room', 'entire_unit'].map(key => `<button class="${listingTypeFilter === key ? 'selected' : ''}" data-rental-type="${key}" aria-pressed="${listingTypeFilter === key}">${t(key === 'all' ? 'allTypes' : key)}</button>`).join('');
+  const cards = rows.map((row, index) => `<article class="rental-card"><div class="rental-art">${listingIllustration()}</div><div class="rental-content"><h3>${esc(row.title)}</h3><p class="rental-meta">${esc(row.type)} · ${t('minutes', {n:row.minutes})}${Number.isFinite(row.area) ? ` · ${t('sqft', {n:row.area})}` : ''}</p><div class="rental-price">HK$ ${fmt(row.rent)} <small>${t('perMonth')}</small></div><div class="provider-row"><button class="outline" data-locate="${index}">${t('locateListing')}</button>${row.url ? `<a class="sample-detail-link" href="${esc(row.url)}" target="_blank" rel="noopener noreferrer">${t('original')}</a>`:''}</div></div></article>`).join('');
+  modal(areaName(area), `<div class="notice">${t('importedNote')}</div><div class="rental-toolbar"><div class="rental-tabs">${tabs}</div><label class="budget-toggle"><input type="checkbox" id="rentalBudgetOnly" ${listingBudgetOnly ? 'checked' : ''}>${t('budgetOnly').replace(/样例|樣例|samples/g,'')}</label></div><div class="rental-list-header"><strong>${t('fileRecords',{n:rows.length})}</strong><button id="rentalShowMap">${t('showMap')}</button></div><div class="rental-list">${cards || `<p>${t('empty')}</p>`}</div>`, 'listings');
+  $('modalBody').querySelectorAll('[data-rental-type]').forEach(button => button.onclick = () => { listingTypeFilter = button.dataset.rentalType; openListings(areaId); });
+  $('rentalBudgetOnly').onchange = event => { listingBudgetOnly = event.target.checked; openListings(areaId); };
+  $('rentalShowMap').onclick = () => { $('modal').close(); selectArea(areaId, true); };
+  $('modalBody').querySelectorAll('[data-locate]').forEach(button => button.onclick = () => {
+    if (!mapAPI?.focusRental) { toast(t('noMap')); return; }
+    $('modal').close();
+    mapAPI.focusRental(rows[Number(button.dataset.locate)]);
+  });
+}
+
+function switchData(records) {
+  importedRentals = records;
+  const active = Boolean(records.length);
+  if (!active) areas.splice(0, areas.length, ...demoAreas);
+  $('budget').max = active ? String(Math.ceil(Math.max(...records.map(record => record.rent)) / 500) * 500) : String(defaultBudgetMax);
+  $('budgetLimit').textContent = fmt(Number($('budget').max));
+  $('budget').value = active ? String(Math.min(22000, Number($('budget').max))) : '8000';
+  const eligible = active ? new Set(records.map(record => record.campus)) : null;
+  const requestedCampus = $('university').value;
+  applied = null;
+  results = [];
+  renderStatic();
+  if (eligible && !eligible.has(requestedCampus)) $('university').value = eligible.values().next().value;
+  compared.clear();
+  selectedId = null;
+  applyFilters();
+}
+
+function renderDataState() {
+  $('dataBadge').textContent = t(importedRentals.length ? 'importedMode' : 'demo');
+  $('rentBasis').textContent = importedRentals.length ? t('sampleRent') : t('rentBasis');
+  $('nativeLink').href = nativeUrl(0);
+  $('nativeLink').textContent = t('dataOpen');
+  const options = $('language').options;
+  const labels = [['简体中文', '香港繁体中文', '英文'], ['簡體中文', '香港繁體中文', '英文'], ['Simplified Chinese', 'Traditional Chinese (Hong Kong)', 'English']][['sc','tc','en'].indexOf(lang)];
+  for (let i = 0; i < options.length; i++) options[i].textContent = labels[i];
+}
+
+function openData() {
+  modal(t('dataDialog'), `<p>${t('dataIntro')}</p><p><a class="outline" href="${nativeUrl(0)}" target="_blank" rel="noopener">${t('dataOpen')} ↗</a></p><p>${t('fileLocal')}</p><input id="rentalCsv" type="file" accept=".csv,text/csv" hidden><button class="outline" id="chooseCsv">${t('dataImport')}</button>${importedRentals.length ? `<button class="reset" id="clearCsv">${t('returnDemo')}</button>` : ''}<p id="csvError" class="error" role="alert"></p>`, 'data');
+  $('chooseCsv').onclick = () => $('rentalCsv').click();
+  if ($('clearCsv')) $('clearCsv').onclick = () => { switchData([]); $('modal').close(); };
+  $('rentalCsv').onchange = async event => {
+    try {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (file.size > 4000000) throw new Error('File too large');
+      const records = readCsv(await file.text());
+      if (!records.length) throw new Error('Empty file');
+      switchData(records);
+      $('modal').close();
+      toast(t('imported', {n: records.length}));
+    } catch {
+      $('csvError').textContent = t('badImport');
+    }
+  };
+}
+
+</script><script>
+'use strict';
+const $=id=>document.getElementById(id),fmt=n=>n.toLocaleString('en-HK'),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const facilityKeys=['mtr','shop','clinic','gym','food'];
+const icons={mtr:'<rect x="5" y="3" width="14" height="15" rx="3"/><path d="M8 21l2-3m6 3-2-3M5 10h14M9 3v7"/><circle cx="9" cy="14" r="1"/><circle cx="15" cy="14" r="1"/>',shop:'<path d="M3 4h3l2 12h11l2-9H7M10 20h.01M18 20h.01"/>',clinic:'<path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6Z"/>',gym:'<path d="M7 8v8M4 10v4M17 8v8M20 10v4M7 12h10"/>',food:'<path d="M4 3v6c0 3 6 3 6 0V3M7 3v18M20 3v18M20 3c-5 0-5 10 0 10"/>',campus:'<path d="m2 9 10-6 10 6-10 6ZM6 12v6l6 3 6-3v-6M22 9v8"/>',area:'<circle cx="12" cy="12" r="7"/>'};
+const colors={mtr:'#a65a69',shop:'#52835c',clinic:'#56899f',gym:'#866b9c',food:'#c18b4f',campus:'#c49b60',area:'#74945f'};
+function icon(k){return`<svg viewBox="0 0 24 24" aria-hidden="true">${icons[k]}</svg>`}
+// Gym and restaurant indices are intentionally synthetic, like the existing three indices.
+areas.forEach((a,i)=>{a.poi=[...a.poi,62+(i*11)%35,75+(i*7)%24]});
+let prefs=new Set(['mtr','shop']),applied=null,results=[],selectedId=null,compared=new Set(),mapAPI=null,satellite=false,guideTab='check',modalKind=null,mapTimer,toastTimer,photoURLs=[];
+const layerState={area:true,campus:true,mtr:false,shop:false,clinic:false,gym:false,food:false};
+function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.add('hidden'),3800)}
+function dirty(){$('pending').classList.remove('hidden')}
+function renderStatic(){document.documentElement.lang={sc:'zh-CN',tc:'zh-HK',en:'en'}[lang];document.title='StudentRent HK · '+t('mapTitle');document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=t(e.getAttribute('data-i18n')));document.querySelectorAll('[data-aria]').forEach(e=>e.setAttribute('aria-label',t(e.dataset.aria)));$('language').value=lang;let uni=$('university').value||'hku';$('university').innerHTML=Object.keys(campuses).filter(k=>!importedRentals.length||importedRentals.some(row=>row.campus===k)).map(k=>`<option value="${k}">${esc(localized(uniNames[k]))} · ${esc(localized(campusNames[k]))}</option>`).join('');if ([...$('university').options].some(option=>option.value===uni)) $('university').value=uni;renderDataState();$('budgetOut').textContent='HK$ '+fmt(+$('budget').value);$('minutesOut').textContent=t('minutes',{n:$('minutes').value});$('minutesMin').textContent=t('minutes',{n:5});$('minutesMax').textContent=t('minutes',{n:90});renderPreferences();renderLayers();if(applied)renderResults()}
+function renderPreferences(){$('preferences').innerHTML=facilityKeys.map(k=>`<button type="button" data-pref="${k}" class="chip ${prefs.has(k)?'selected':''}" aria-pressed="${prefs.has(k)}"><span class="map-key" style="background:${colors[k]};width:19px;height:19px">${icon(k)}</span>${t(k)}</button>`).join('')}
+$('language').onchange=()=>{lang=$('language').value;try{localStorage.setItem('sr-language',lang)}catch{}renderStatic();if(mapAPI)mapAPI.update(false);if($('modal').open){if(modalKind==='compare')openCompare();else if(modalKind==='method')method();else if(modalKind==='guide')openGuide(guideTab);else if(modalKind==='connect')openConnect();else if(modalKind==='data')openData();else restoreListingDialog()}};
+$('budget').oninput=()=>{$('budgetOut').textContent='HK$ '+fmt(+$('budget').value);dirty()};$('minutes').oninput=()=>{$('minutesOut').textContent=t('minutes',{n:$('minutes').value});dirty()};$('university').onchange=dirty;
+$('preferences').onclick=e=>{let b=e.target.closest('button');if(!b)return;let p=b.dataset.pref;prefs.has(p)?prefs.delete(p):prefs.add(p);renderPreferences();dirty()};['wRent','wTime','wPoi'].forEach(id=>{$(id).oninput=()=>{$(id).nextElementSibling.textContent=$(id).value;dirty()}});
+function applyFilters(){let weights=['wRent','wTime','wPoi'].map(id=>+$(id).value);if(!weights.some(Boolean)){toast(t('weightError'));return}let uni=$('university').value,ui=Object.keys(campuses).indexOf(uni),budget=+$('budget').value,minutes=+$('minutes').value;applied={uni,budget,minutes,weights,prefs:[...prefs]};results=rankAreas(applied,ui);if(!results.find(a=>a.id===selectedId))selectedId=results[0]?.id||null;compared=new Set([...compared].filter(id=>results.some(a=>a.id===id)));$('pending').classList.add('hidden');renderResults();if(mapAPI)mapAPI.update(true)}
+function renderResults(){$('campusLabel').textContent=t('atCampus',{name:localized(uniNames[applied.uni]),campus:localized(campusNames[applied.uni])});$('resultSummary').textContent=t('summary',{n:results.length,budget:fmt(applied.budget),time:applied.minutes});$('cardsTitle').textContent=t('recommended',{n:results.length});renderCards();renderDetail();updateCompareCount();$('footerNote').textContent=t(importedRentals.length?'importedNote':'footer')}
+$('filters').onsubmit=e=>{e.preventDefault();applyFilters()};$('reset').onclick=()=>{$('budget').value=importedRentals.length?Math.min(22000,Number($('budget').max)):8000;$('minutes').value=30;$('university').value=[...$('university').options].some(option=>option.value==='hku')?'hku':$('university').options[0].value;['wRent','wTime','wPoi'].forEach((id,i)=>{$(id).value=[4,4,2][i];$(id).nextElementSibling.textContent=$(id).value});prefs=new Set(['mtr','shop']);renderStatic();applyFilters();toast(t('resetDone'))};
+function renderCards(){$('cards').innerHTML=results.length?results.map((a,i)=>`<article class="area-card ${a.id===selectedId?'selected':''}" tabindex="0" role="button" aria-label="${esc(t('viewArea',{name:areaName(a)}))}" data-id="${a.id}"><div class="card-top"><div class="card-title"><small>${String(i+1).padStart(2,'0')}</small>${esc(areaName(a))}</div><span class="score">${t('score',{n:a.score})}</span></div><div class="card-en"></div><div class="card-stats"><span><b>$${fmt(a.rent)}</b> ${t('perMonth')}</span><span>${t('cardCommute',{n:a.time})}</span></div><div class="card-foot"><span>${t((a.fs??0)>=85?'balanced':'visit')}</span><label><input type="checkbox" data-compare="${a.id}" ${compared.has(a.id)?'checked':''}> ${t('compareBtn')}</label></div><div class="card-listing-hint">${t('listingCardHint')}<span>${importedRentals.length?results.find(row=>row.id===a.id).rows.length:areaListings(a.id).length} ${importedRentals.length?'':(['示范','示範','Demo'][['sc','tc','en'].indexOf(lang)])}</span></div></article>`).join(''):`<div class="empty">${t('empty')}</div>`}
+$('cards').onclick=e=>{let cb=e.target.closest('[data-compare]');if(cb){toggleCompare(cb.dataset.compare);return}if(e.target.closest('label'))return;let c=e.target.closest('[data-id]');if(c)selectArea(c.dataset.id,true,true)};$('cards').onkeydown=e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.area-card')){e.preventDefault();selectArea(e.target.dataset.id,true,true)}};
+function selectArea(id,zoom=false,showListings=false){selectedId=id;renderCards();renderDetail();if(mapAPI){mapAPI.update(false);if(zoom)mapAPI.focus(id)}if(showListings)openListings(id,true)}
+function renderDetail(){let a=results.find(a=>a.id===selectedId);$('detail').classList.toggle('hidden',!a);if(!a)return;$('detail').innerHTML=`<button class="close" aria-label="${t('close')}">×</button><div class="detail-head"><div class="rankbox">${String(results.indexOf(a)+1).padStart(2,'0')}</div><div><h3>${esc(areaName(a))}</h3><div class="sub"></div></div></div><div class="detail-stats"><div><span class="sub">${t(importedRentals.length?'sampleRent':'mockRent')}</span><b>HK$ ${fmt(a.rent)}</b></div><div><span class="sub">${t(importedRentals.length?'sampleTime':'mockTime')}</span><b>${a.time} <small>${t('oneWay')}</small></b></div></div><div class="scoreline"><span>${t('overall')}</span><strong>${a.score} / 100</strong></div><div class="scorebar"><i style="width:${a.score}%"></i></div><div class="facility-list">${facilityKeys.map((k,i)=>Number.isFinite(a.poi[i])?`<span>${t(k)} ${a.poi[i]}</span>`:'').join('')}</div><div class="sub">${t(importedRentals.length?(a.poi.some(Number.isFinite)?'facilityIndex':'noAmenities'):'facilityIndex')}</div><p class="detail-reason">${(importedRentals.length?t('importedNote'):localized(areaReasons[a.id]))}</p><button class="compare-add">${t(compared.has(a.id)?'removeCompare':'addCompare')}</button>${renderListingPreview(a.id)}`;$('detail').querySelector('.close').onclick=()=>{selectedId=null;renderCards();$('detail').classList.add('hidden');mapAPI?.update(false)};$('detail').querySelector('.compare-add').onclick=()=>toggleCompare(a.id);$('detail').querySelector('[data-area-listings]').onclick=()=>openListings(a.id,true)}
+function toggleCompare(id){if(compared.has(id))compared.delete(id);else if(compared.size>=3){toast(t('maxCompare'));renderCards();return}else compared.add(id);updateCompareCount();renderCards();renderDetail()}
+function updateCompareCount(){$('compareCount').textContent=compared.size?'('+compared.size+')':'';$('compareCount2').textContent=compared.size}
+function modal(title,html,kind){modalKind=kind;$('modalTitle').textContent=title;$('modalBody').innerHTML=html;if(!$('modal').open)$('modal').showModal()}
+$('closeModal').onclick=()=>$('modal').close();$('modal').onclick=e=>{if(e.target===$('modal')){let r=$('modal').getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)$('modal').close()}};
+function openCompare(){let list=results.filter(a=>compared.has(a.id));if(!list.length){modal(t('compare'),`<div class="notice">${t('compareEmpty')}</div>`,'compare');return}modal(t('compareTitle',{n:list.length}),`<div class="notice">${t(importedRentals.length?'importedNote':'compareNotice')}</div><div class="compare-grid" style="grid-template-columns:repeat(${list.length},minmax(175px,1fr));margin-top:18px">${list.map(a=>`<section class="compare-column"><h3>${esc(areaName(a))}</h3><div class="sub"></div>${[[t('overall'),a.score+' / 100',a.score],[t('rent'),'$'+fmt(a.rent),a.rs],[t('time'),t('minutes',{n:a.time}),a.ts],[t('preferredIndex'),a.fs===null?'—':Math.round(a.fs)+' / 100',a.fs??0]].map(m=>`<div class="metric">${m[0]}<b>${m[1]}</b><div class="metricbar"><i style="width:${m[2]}%"></i></div></div>`).join('')}<p>${(importedRentals.length?t('importedNote'):localized(areaReasons[a.id]))}</p><button class="outline" data-view="${a.id}">${t('viewMap')}</button></section>`).join('')}</div><p>${t('weightsInfo',{a:applied.weights[0],b:applied.weights[1],c:applied.weights[2]})}</p>`,'compare');$('modalBody').querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>{$('modal').close();selectArea(b.dataset.view,true)})}
+$('compareButton').onclick=$('compareNav').onclick=openCompare;$('exploreNav').onclick=()=>{$('modal').close();window.scrollTo({top:0,behavior:'smooth'})};
+function method(){modal(t('methodTitle'),`<div class="notice">${t(importedRentals.length?'importedNote':'methodNote')}</div>${(importedRentals.length?[]:[1,2,3,4,5]).map(n=>`<h3>${t('methodH'+n)}</h3><p>${t('methodP'+n)}</p>`).join('')}`,'method')}$('method').onclick=$('help').onclick=method;
+function renderLayers(){let ext=mapAPI?.externalLayers()||[];$('layersPanel').innerHTML=`<h4>${t('layersTitle')}<button id="closeLayers" aria-label="${t('close')}">×</button></h4>${['area','campus',...facilityKeys].map(k=>`<label class="layer-row"><span class="map-key" style="background:${colors[k]}">${icon(k)}</span><span>${t(k==='area'?'areaLayer':k==='campus'?'campusLayer':k)}</span><input type="checkbox" data-layer="${k}" ${layerState[k]?'checked':''}></label>`).join('')}<div class="layer-section">${t('suitability')}<div class="legendrow"><span><i class="dot"></i>80–100</span><span><i class="dot" style="background:#8ba773"></i>60–79</span><span><i class="dot" style="background:#b4a477"></i>0–59</span></div></div><div class="layer-section">${t(importedRentals.length?'importedFacilities':'mockPoiNote')}</div><div class="layer-extra"><strong>${t('externalLayers')}</strong>${ext.length?ext.map((l,i)=>`<label class="layer-row"><span>${esc(l.title||l.id)}</span><input type="checkbox" data-external="${i}" ${l.visible?'checked':''}></label>`).join(''):`<p>${t('noExternal')}</p>`}</div>`;$('closeLayers').onclick=()=>setLayersOpen(false);$('layersPanel').querySelectorAll('[data-layer]').forEach(c=>c.onchange=()=>{layerState[c.dataset.layer]=c.checked;mapAPI?.visibility()});$('layersPanel').querySelectorAll('[data-external]').forEach(c=>c.onchange=()=>mapAPI?.setExternal(+c.dataset.external,c.checked))}
+function setLayersOpen(open){$('layersPanel').classList.toggle('hidden',!open);$('toggleLayers').setAttribute('aria-expanded',String(open))}$('toggleLayers').onclick=()=>setLayersOpen($('layersPanel').classList.contains('hidden'));
+function readChecks(){try{return JSON.parse(localStorage.getItem('sr-checks')||'[]')}catch{return[]}}
+function openGuide(tab=guideTab){clearPhotoURLs();guideTab=tab;modal(t('guideTitle'),`<div class="guide-tab">${[['check','checkTab'],['warning','warningTab'],['record','recordTab']].map(([id,key])=>`<button data-tab="${id}" class="${tab===id?'selected':''}">${t(key)}</button>`).join('')}</div><div id="guideContent"></div>`,'guide');$('modalBody').querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>openGuide(b.dataset.tab));if(tab==='check'){let done=readChecks();$('guideContent').innerHTML=checklist.map((a,i)=>`<label class="check-item"><input type="checkbox" data-check="${i}" ${done.includes(i)?'checked':''}><span><strong>${localized(a[0])}</strong>${localized(a[1])}</span></label>`).join('')+`<div class="progress" id="checkProgress">${t('checkProgress',{n:done.length,total:checklist.length})}</div>`;$('guideContent').querySelectorAll('[data-check]').forEach(c=>c.onchange=()=>{let d=[...$('guideContent').querySelectorAll('[data-check]:checked')].map(x=>+x.dataset.check);try{localStorage.setItem('sr-checks',JSON.stringify(d));$('checkProgress').textContent=t('checkProgress',{n:d.length,total:checklist.length})}catch{toast(t('storageError'))}})}else if(tab==='warning')$('guideContent').innerHTML=`<div class="notice">${t('warningNote')}</div>`+warnings.map(x=>`<h3>↗ ${localized(x[0])}</h3><p>${localized(x[1])}</p>`).join('');else renderRecordForm()}
+$('guideNav').onclick=()=>openGuide('check');
+let dbPromise;function db(){if(!dbPromise)dbPromise=new Promise((resolve,reject)=>{let r=indexedDB.open('studentrent-demo',1);r.onupgradeneeded=()=>r.result.createObjectStore('records',{keyPath:'id'});r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)});return dbPromise}async function dbOp(mode,fn){let d=await db();return new Promise((res,rej)=>{let tx=d.transaction('records',mode),r=fn(tx.objectStore('records'));tx.oncomplete=()=>res(r.result);tx.onerror=()=>rej(tx.error);tx.onabort=()=>rej(tx.error)})}
+function clearPhotoURLs(){photoURLs.forEach(URL.revokeObjectURL);photoURLs=[]}
+async function renderRecordForm(){$('guideContent').innerHTML=`<div class="notice">${t('recordNotice')}</div><form id="recordForm"><div class="record-form" style="margin-top:15px"><label>${t('recordName')}<input class="field" id="recordName" placeholder="${t('recordNamePH')}" maxlength="70" required></label><label>${t('recordDate')}<input class="field" type="date" id="recordDate" required></label><label class="wide">${t('recordNote')}<textarea class="field" id="recordNote" placeholder="${t('recordNotePH')}" maxlength="2000" required></textarea></label><label class="wide">${t('recordPhotos')}<input id="recordPhotos" type="file" accept="image/*" multiple hidden><button class="outline" type="button" id="choosePhotos">${t('fileChoose')}</button><span class="sub" id="photoCount"></span></label></div><div class="photo-grid" id="photoPreview"></div><button class="primary" type="submit" id="saveRecord" style="margin-top:12px">${t('saveRecord')}</button><div id="recordError" class="error" role="alert"></div></form><h3>${t('myRecords')}</h3><div id="savedRecords">${t('reading')}</div>`;let d=new Date();$('recordDate').value=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Hong_Kong',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);$('recordName').value=results.find(a=>a.id===selectedId)?areaName(results.find(a=>a.id===selectedId)):'';$('choosePhotos').onclick=()=>$('recordPhotos').click();$('recordPhotos').onchange=()=>{let files=[...$('recordPhotos').files];$('photoCount').textContent=t('fileCount',{n:files.length});$('recordError').textContent=validFiles(files)?'':t('photoError');$('photoPreview').innerHTML=files.slice(0,4).map(f=>{let u=URL.createObjectURL(f);photoURLs.push(u);return`<img src="${u}" alt="${t('photoAlt')}">`}).join('')};$('recordForm').onsubmit=async e=>{e.preventDefault();let files=[...$('recordPhotos').files];if(!validFiles(files)){$('recordError').textContent=t('photoError');return}let name=$('recordName').value.trim(),note=$('recordNote').value.trim();if(!name||!note){$('recordError').textContent=t('recordValid');return}$('saveRecord').disabled=true;try{await dbOp('readwrite',s=>s.put({id:crypto.randomUUID(),name,date:$('recordDate').value,note,photos:files,created:Date.now()}));toast(t('recordSaved'));clearPhotoURLs();renderRecordForm()}catch{$('recordError').textContent=t('recordFailed');$('saveRecord').disabled=false}};await renderSaved()}
+function validFiles(files){return files.length<=4&&files.every(f=>f.size<=5*1024*1024&&f.type.startsWith('image/'))}
+async function renderSaved(){try{let rs=await dbOp('readonly',s=>s.getAll());if(!$('savedRecords'))return;$('savedRecords').innerHTML=rs.length?rs.sort((a,b)=>b.created-a.created).map(r=>`<div class="record-card"><h4>${esc(r.name)}</h4><span class="sub">${esc(r.date)}</span><p>${esc(r.note)}</p><div class="photo-grid">${r.photos.map(f=>{let u=URL.createObjectURL(f);photoURLs.push(u);return`<a href="${u}" target="_blank" rel="noopener"><img src="${u}" alt="${t('photoAlt')}"></a>`}).join('')}</div><button data-export="${r.id}">${t('exportText')}</button> <button data-delete="${r.id}">${t('deleteRecord')}</button></div>`).join(''):`<p>${t('noRecords')}</p>`;$('savedRecords').querySelectorAll('[data-delete]').forEach(b=>b.onclick=async()=>{try{await dbOp('readwrite',s=>s.delete(b.dataset.delete));toast(t('recordDeleted'));renderSaved()}catch{toast(t('recordFailed'))}});$('savedRecords').querySelectorAll('[data-export]').forEach(b=>b.onclick=()=>{let r=rs.find(x=>x.id===b.dataset.export),blob=new Blob([`StudentRent HK\n${t('recordName')}: ${r.name}\n${t('recordDate')}: ${r.date}\n${t('recordNote')}: ${r.note}\n\n${t('exportNotice')}`],{type:'text/plain;charset=utf-8'}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='studentrent-record.txt';a.click();setTimeout(()=>URL.revokeObjectURL(u),2000)})}catch{if($('savedRecords'))$('savedRecords').innerHTML=`<p>${t('readRecordsError')}</p>`}}
+$('modal').addEventListener('close',clearPhotoURLs);
+function openConnect(){modal(t('connectTitle'),`<div class="notice">${t('connectNote')}</div><p>${t('connectHelp')}</p><label class="label" for="webmapInput">${t('webmapLabel')}</label><input class="field" id="webmapInput" placeholder="${t('webmapPH')}"><button class="primary" id="loadWebmap">${t('loadWebmap')}</button><button class="reset" id="restoreMap">${t('restoreMap')}</button><div class="error" id="connectError" role="alert"></div>`,'connect');$('loadWebmap').onclick=async()=>{if(!mapAPI){$('connectError').textContent=t('mapNotReady');return}let text=$('webmapInput').value.trim(),id=text;if(text.includes('://')){try{let u=new URL(text);id=u.searchParams.get('webmap')||u.searchParams.get('id')||''}catch{id=''}}if(!/^[a-f0-9]{32}$/i.test(id)){$('connectError').textContent=t('idError');return}$('loadWebmap').disabled=true;$('loadWebmap').textContent=t('loadingWebmap');try{await mapAPI.webmap(id);$('modal').close();renderLayers();toast(t('mapConnected'))}catch{$('connectError').textContent=t('mapConnectError');$('loadWebmap').disabled=false;$('loadWebmap').textContent=t('loadWebmap')}};$('restoreMap').onclick=()=>{if(mapAPI){mapAPI.restore();renderLayers();$('modal').close();toast(t('mapRestored'))}else toast(t('mapNotReady'))}}$('connect').onclick=openConnect;
+$('zoomIn').onclick=()=>mapAPI?.zoom(1);$('zoomOut').onclick=()=>mapAPI?.zoom(-1);$('homeMap').onclick=()=>mapAPI?.fit();$('baseMap').onclick=()=>{if(mapAPI){satellite=!satellite;mapAPI.basemap(satellite)}};
+function loadArcGIS(){clearTimeout(mapTimer);let s=document.createElement('script');s.src='https://js.arcgis.com/4.34/';s.onload=initMap;s.onerror=()=>{$('mapLoading').textContent=t('mapFailure');$('mapLoadingNote').textContent=t('mapFailureNote')};document.head.appendChild(s);mapTimer=setTimeout(()=>{if(!mapAPI){$('mapLoading').textContent=t('mapSlow');$('mapLoadingNote').textContent=t('mapFailureNote')}},18000)}
+function initMap(){require(['esri/Map','esri/views/MapView','esri/layers/GraphicsLayer','esri/Graphic','esri/layers/TileLayer','esri/Basemap','esri/WebMap'],(Map,MapView,GraphicsLayer,Graphic,TileLayer,Basemap,WebMap)=>{const base=new Basemap({baseLayers:[new TileLayer({url:'https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer'})],referenceLayers:[new TileLayer({url:'https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Reference/MapServer'})]});let layers={};['area','campus',...facilityKeys].forEach(k=>layers[k]=new GraphicsLayer({id:'studentrent-'+k}));let own=Object.values(layers),map=new Map({basemap:base,layers:own}),view=new MapView({container:'viewDiv',map,center:[114.14,22.285],zoom:14,ui:{components:['attribution']},constraints:{minZoom:9,maxZoom:18}}),external=[];view.when(()=>{$('fallback').classList.add('hidden');clearTimeout(mapTimer);mapAPI.update(true)}).catch(()=>{$('mapLoading').textContent=t('mapFailure');$('mapLoadingNote').textContent=t('mapFailureNote')});const pt=xy=>({type:'point',longitude:xy[0],latitude:xy[1]});
+function fit(){let xy=[campuses[applied.uni].xy,...results.map(a=>a.xy)],xs=xy.map(c=>c[0]),ys=xy.map(c=>c[1]),w=window.innerWidth<760?.014:.022,h=.012;view.goTo({xmin:Math.min(...xs)-w,xmax:Math.max(...xs)+w*1.7,ymin:Math.min(...ys)-h,ymax:Math.max(...ys)+h,spatialReference:{wkid:4326}},{duration:650}).catch(()=>{})}
+function marker(k){let svg=`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="8" fill="${colors[k]}" stroke="white" stroke-width="2"/><g transform="translate(5 5) scale(.9167)" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${icons[k]}</g></svg>`;return{type:'picture-marker',url:'data:image/svg+xml;base64,'+btoa(svg),width:21,height:21}}
+function update(doFit){if(!applied)return;own.forEach(l=>l.removeAll());layers.area.title=t('areaLayer');layers.campus.title=t('campusLayer');facilityKeys.forEach(k=>layers[k].title=t(k));results.forEach((a,i)=>{let ring=Array.from({length:49},(_,j)=>{let ang=j*Math.PI*2/48;return[a.xy[0]+Math.cos(ang)*.0038,a.xy[1]+Math.sin(ang)*.0035]});layers.area.add(new Graphic({geometry:{type:'polygon',rings:[ring],spatialReference:{wkid:4326}},symbol:{type:'simple-fill',color:a.id===selectedId?[77,128,74,.28]:[135,160,105,.13],outline:{color:a.id===selectedId?'#487c49':'#9bad86',width:a.id===selectedId?1.6:.8}},attributes:{areaId:a.id}}));let color=a.score>=80?'#32745a':a.score>=60?'#8ba773':'#b4a477';layers.area.add(new Graphic({geometry:pt(a.xy),symbol:{type:'simple-marker',size:a.id===selectedId?29:24,color,outline:{color:'#fff',width:2}},attributes:{areaId:a.id}}));layers.area.add(new Graphic({geometry:pt(a.xy),symbol:{type:'text',text:String(i+1),color:'#fff',font:{size:10,weight:'bold'},yoffset:-4},attributes:{areaId:a.id}}));layers.area.add(new Graphic({geometry:pt(a.xy),symbol:{type:'text',text:areaName(a)+' · $'+fmt(a.rent),color:'#31503b',haloColor:'#fff',haloSize:2,font:{size:10,weight:'bold'},yoffset:23},attributes:{areaId:a.id}}));if(!importedRentals.length) facilityKeys.forEach((k,j)=>{let angle=j*2*Math.PI/5+.3;layers[k].add(new Graphic({geometry:pt([a.xy[0]+Math.cos(angle)*.0028,a.xy[1]+Math.sin(angle)*.0023]),symbol:marker(k),popupTemplate:{title:t('mockPoint',{name:t(k)}),content:t('mockPointBody')}}))})});let c=campuses[applied.uni];layers.campus.add(new Graphic({geometry:pt(c.xy),symbol:marker('campus'),popupTemplate:{title:localized(uniNames[applied.uni]),content:t('campusPopup',{campus:localized(campusNames[applied.uni])})}}));layers.campus.add(new Graphic({geometry:pt(c.xy),symbol:{type:'text',text:localized(uniNames[applied.uni]),color:'#946332',haloColor:'#fff',haloSize:2,font:{size:11,weight:'bold'},yoffset:-25}}));visibility();if(doFit)fit()}
+function visibility(){Object.keys(layers).forEach(k=>layers[k].visible=layerState[k])}view.on('click',async e=>{let hit=await view.hitTest(e),r=hit.results.find(r=>r.graphic?.attributes?.areaId);if(r)selectArea(r.graphic.attributes.areaId,true,true)});
+function moveOwn(target){let old=view.map;old.removeMany(own);target.addMany(own);view.map=target}
+mapAPI={update,visibility,fit,externalLayers:()=>external,setExternal:(i,v)=>{if(external[i])external[i].visible=v},focusRental:r=>view.goTo({center:r.xy,zoom:16},{duration:550}).catch(()=>{}),focus:id=>{let a=areas.find(a=>a.id===id);if(a)view.goTo({center:[a.xy[0]+.003,a.xy[1]],zoom:14.5},{duration:650}).catch(()=>{})},zoom:n=>view.goTo({zoom:view.zoom+n}).catch(()=>{}),basemap:s=>{view.map.basemap=s?new Basemap({baseLayers:[new TileLayer({url:'https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer'})]}):base},webmap:async id=>{let wm=new WebMap({portalItem:{id}});await wm.load();external=wm.layers.toArray();moveOwn(wm);fit()},restore:()=>{if(view.map!==map)moveOwn(map);external=[];map.basemap=base;satellite=false;fit()}};renderLayers();
+},()=>{$('mapLoading').textContent=t('mapFailure');$('mapLoadingNote').textContent=t('mapFailureNote')})}
+$('retryMap').onclick=()=>location.reload();renderStatic();if(window.innerWidth<760)setLayersOpen(false);applyFilters();$('dataMenu').onclick=openData;const startGuide=new URLSearchParams(location.search).get('guide');if(['check','warning','record'].includes(startGuide))openGuide(startGuide);else if(new URLSearchParams(location.search).get('view')==='compare')openCompare();else openRentalFromHash();window.addEventListener('hashchange',openRentalFromHash);loadArcGIS();
+
+</script></body></html>
